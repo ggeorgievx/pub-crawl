@@ -1,11 +1,22 @@
 import React from 'react';
 import Layout from './components/Layout/Layout';
+import { BrowserRouter, Route } from 'react-router-dom';
 import Home from './components/Home/Home';
+import Create from './containers/Create/Create';
+import PubCrawls from './components/PubCrawls/PubCrawls';
+import PubCrawl from './components/PubCrawl/PubCrawl';
+import Credits from './components/Credits/Credits';
 
 const App = () => (
-  <Layout>
-    <Home></Home>
-  </Layout>
+  <BrowserRouter>
+    <Layout>
+      <Route exact path="/" component={Home} />
+      <Route exact path="/create" component={Create} />
+      <Route exact path="/pubCrawls" component={PubCrawls} />
+      <Route exact path="/pubCrawl/:id" component={PubCrawl} />
+      <Route exact path="/credits" component={Credits} />
+    </Layout>
+  </BrowserRouter>
 );
 
 export default App;

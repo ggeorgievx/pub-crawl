@@ -35,7 +35,11 @@ const Footer = () => {
       <Typography variant="h6">
         <Box fontStyle="italic">
           Inspired by&nbsp;
-          <Link href="https://www.imdb.com/title/tt1213663/" color="secondary" target="_blank">
+          <Link
+            color="secondary"
+            href="https://www.imdb.com/title/tt1213663/"
+            target="_blank"
+          >
             The World's End
           </Link>
         </Box>

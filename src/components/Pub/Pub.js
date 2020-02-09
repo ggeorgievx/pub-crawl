@@ -65,9 +65,9 @@ const Pub = (props) => {
                   </Typography>
                 </div>
                 <div className={classes.container}>
-                  {props.icons.map((Icon, index) =>
+                  {props.icons.map((Icon, index) => (
                     <Icon key={index} className={classes.icon} />
-                  )}
+                  ))}
                 </div>
               </div>
             </CardContent>

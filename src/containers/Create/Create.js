@@ -41,6 +41,9 @@ const useStyles = makeStyles({
       width: '300px'
     }
   },
+  container: {
+    pointerEvents: 'none'
+  },
   button: {
     width: '480px',
     '@media (max-width:850px)': {
@@ -106,7 +109,7 @@ const Create = () => {
         <List className={classes.list}>
           <DragDropContext onDragEnd={onDragEndHandler}>
             <Droppable droppableId="0">
-              {(provided) => {
+              {(provided, snapshot) => {
                 const pubElements = pubs.map((pub, index) => (
                   <Pub
                     key={pub.id}
@@ -115,7 +118,8 @@ const Create = () => {
                     icons={
                       pubs.length === 1 ? [First, Last] :
                         index === 0 ? [First] :
-                          index === pubs.length - 1 ? [Last] : []}
+                          index === pubs.length - 1 ? [Last] : []
+                    }
                   />
                 ));
 
@@ -123,27 +127,29 @@ const Create = () => {
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
+                    className={
+                      snapshot.isDraggingOver ? classes.container : ''
+                    }
                   >
                     {pubElements}
                     {provided.placeholder}
+                    {pubs.length < pubsLimit ?
+                      <Button
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        endIcon={<AddCircleOutlineIcon />}
+                        onClick={addPubButtonHandler}
+                      >
+                        Add Pub
+                      </Button> :
+                      null}
                   </div>
                 );
               }}
             </Droppable>
           </DragDropContext>
-          {
-            pubs.length < pubsLimit ?
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="primary"
-                size="large"
-                endIcon={<AddCircleOutlineIcon />}
-                onClick={addPubButtonHandler}
-              >
-                Add Pub
-              </Button>
-              : null}
         </List>
       </Paper>
     </div>

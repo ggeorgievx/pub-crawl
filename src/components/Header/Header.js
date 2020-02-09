@@ -1,22 +1,30 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { ReactComponent as Logo } from '../../assets/images/logo.svg';
+import { ReactComponent as Logo1 } from '../../assets/images/logo1.svg';
+import { ReactComponent as Logo2 } from '../../assets/images/logo2.svg';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
   header: {
-    height: '60px',
-    background: '#000000',
+    height: '56px',
+    background: 'rgb(0, 0, 0)'
+  },
+  container: {
     display: 'flex',
     alignItems: 'center',
-    color: 'white',
     justifyContent: 'center'
   },
+  link: {
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none'
+  },
   logo: {
-    width: '54px',
-    height: '54px',
-    marginRight: '10px'
+    width: '50px',
+    height: '50px',
+    margin: '3px 10px 3px 10px'
   }
 });
 
@@ -25,15 +33,17 @@ const Header = () => {
 
   return (
     <div className={classes.header}>
-      <div className={classes.left}>
-        <Logo className={classes.logo} />
+      <div className={classes.container}>
+        <Link className={classes.link} to="/">
+          <Logo1 className={classes.logo} />
+          <Typography variant="h4" color="secondary">
+            <Box fontStyle="italic">
+              PUB CRAWL
+            </Box>
+          </Typography>
+          <Logo2 className={classes.logo} />
+        </Link>
       </div>
-      <Typography variant="h4" color="secondary">
-        <Box fontStyle="italic">
-          PUB CRAWL
-        </Box>
-      </Typography>
-      <div className={classes.right}></div>
     </div>
   );
 };

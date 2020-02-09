@@ -31,7 +31,7 @@ const Footer = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.footer}>
+    <footer className={classes.footer}>
       <Typography variant="h6">
         <Box fontStyle="italic">
           Inspired by&nbsp;
@@ -40,7 +40,7 @@ const Footer = () => {
           </Link>
         </Box>
       </Typography>
-    </div>
+    </footer>
   );
 };
 

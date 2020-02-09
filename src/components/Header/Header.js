@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     textDecoration: 'none'
   },
-  logo: {
+  icon: {
     width: '50px',
     height: '50px',
     margin: '3px 10px 3px 10px'
@@ -32,19 +32,19 @@ const Header = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.header}>
+    <header className={classes.header}>
       <div className={classes.container}>
         <Link className={classes.link} to="/">
-          <Logo1 className={classes.logo} />
+          <Logo1 className={classes.icon} />
           <Typography variant="h4" color="secondary">
             <Box fontStyle="italic">
               PUB CRAWL
             </Box>
           </Typography>
-          <Logo2 className={classes.logo} />
+          <Logo2 className={classes.icon} />
         </Link>
       </div>
-    </div>
+    </header>
   );
 };
 

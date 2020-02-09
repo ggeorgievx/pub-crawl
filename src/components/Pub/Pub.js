@@ -22,6 +22,21 @@ const useStyles = makeStyles({
     KhtmlUserSelect: 'none',
     MozUserSelect: 'none',
     cursor: 'default'
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  column: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  container: {
+    marginLeft: 'auto'
+  },
+  icon: {
+    width: '50px',
+    height: '50px'
   }
 });
 
@@ -29,26 +44,37 @@ const Pub = (props) => {
   const classes = useStyles();
 
   return (
-    <Draggable draggableId={props.draggableId} index={props.index}>
-      {(provided) => (
-        <Card
-          className={classes.card}
-          elevation={5}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
-          <CardContent>
-            <Typography noWrap variant="h5" component="h2">
-              {props.draggableId}. Crafter
-            </Typography>
-            <Typography color="secondary">
-              3 am - 10 pm
-            </Typography>
-          </CardContent>
-        </Card>
-      )}
-    </Draggable>
+    <div>
+      <Draggable draggableId={props.draggableId} index={props.index}>
+        {(provided) => (
+          <Card
+            className={classes.card}
+            elevation={5}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+          >
+            <CardContent>
+              <div className={classes.row}>
+                <div className={classes.column}>
+                  <Typography noWrap variant="h5" component="h2">
+                    {props.draggableId}. Crafter
+                  </Typography>
+                  <Typography color="secondary">
+                    3 am - 10 pm
+                  </Typography>
+                </div>
+                <div className={classes.container}>
+                  {props.icons.map((Icon, index) =>
+                    <Icon key={index} className={classes.icon} />
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </Draggable>
+    </div>
   );
 };
 

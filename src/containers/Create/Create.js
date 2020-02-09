@@ -6,6 +6,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Button from '@material-ui/core/Button';
 import Pub from '../../components/Pub/Pub';
+import { ReactComponent as First } from '../../assets/images/first.svg';
+import { ReactComponent as Last } from '../../assets/images/last.svg';
 
 const useStyles = makeStyles({
   create: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles({
       width: '300px'
     }
   },
-  addButton: {
+  button: {
     width: '480px',
     '@media (max-width:850px)': {
       width: '280px'
@@ -61,34 +63,36 @@ const Create = () => {
       return;
     }
 
-    const { index: destinationIndex } = destination;
-    const { index: sourceIndex } = source;
+    const destinationIndex = destination.index;
+    const sourceIndex = source.index;
 
     // Dropped at the same position.
     if (destinationIndex === sourceIndex) {
       return;
     }
 
-    const newPubs = [
-      ...pubs
-    ];
+    setPubs((oldPubs) => {
+      const newPubs = [
+        ...oldPubs
+      ];
 
-    const [deletedItem] = newPubs.splice(sourceIndex, 1);
-    newPubs.splice(destinationIndex, 0, deletedItem);
+      const [deletedItem] = newPubs.splice(sourceIndex, 1);
+      newPubs.splice(destinationIndex, 0, deletedItem);
 
-    setPubs(newPubs);
+      return newPubs;
+    });
   };
 
   const addPubButtonHandler = () => {
-    setPubs((prevPubs) => {
+    setPubs((oldPubs) => {
       const newPubs = [
-        ...prevPubs
+        ...oldPubs
       ];
 
-      if (prevPubs.length < pubsLimit) {
+      if (oldPubs.length < pubsLimit) {
         newPubs.push({
-          id: `${prevPubs.length}`,
-          name: `${prevPubs.length}.Crafter`
+          id: `${oldPubs.length}`,
+          name: `${oldPubs.length}.Crafter`
         });
       }
 
@@ -104,7 +108,15 @@ const Create = () => {
             <Droppable droppableId="0">
               {(provided) => {
                 const pubElements = pubs.map((pub, index) => (
-                  <Pub key={pub.id} draggableId={pub.id} index={index} />
+                  <Pub
+                    key={pub.id}
+                    draggableId={pub.id}
+                    index={index}
+                    icons={
+                      pubs.length === 1 ? [First, Last] :
+                        index === 0 ? [First] :
+                          index === pubs.length - 1 ? [Last] : []}
+                  />
                 ));
 
                 return (
@@ -122,7 +134,7 @@ const Create = () => {
           {
             pubs.length < pubsLimit ?
               <Button
-                className={classes.addButton}
+                className={classes.button}
                 variant="contained"
                 color="primary"
                 size="large"

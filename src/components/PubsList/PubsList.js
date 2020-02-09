@@ -5,12 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Button from '@material-ui/core/Button';
-import Pub from '../../components/Pub/Pub';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
-import { ReactComponent as First } from '../../assets/images/first.svg';
-import { ReactComponent as Last } from '../../assets/images/last.svg';
+import InnerPubsList from '../../components/InnerPubsList/InnerPubsList';
 
 const useStyles = makeStyles({
   backgroundPaper: {
@@ -68,7 +66,7 @@ const PubsList = (props) => {
     `The Golden Mile consists of ${props.pubsLimit} pubs. You can't add more than that.` :
     `You can't add more than ${props.pubsLimit} pubs.`;
 
-  const addPubButtonElement = props.pubs.length < props.pubsLimit ?
+  const addPubButtonElement = props.pubs.length < props.pubsLimit ? (
     <Button
       className={classes.button}
       variant="contained"
@@ -78,23 +76,25 @@ const PubsList = (props) => {
       onClick={props.addPubButtonHandler}
     >
       Add Pub
-  </Button> :
-    <Dialog
-      className={classes.dialog}
-      open={props.dialogOpen}
-      classes={{ paper: classes.dialogPaper }}
-    >
-      <DialogTitle>{dialogTitle}</DialogTitle>
-      <DialogActions>
-        <Button
-          onClick={props.okayButtonHandler}
-          variant="contained"
-          color="primary"
-        >
-          Okay
     </Button>
-      </DialogActions>
-    </Dialog>;
+  ) : (
+      <Dialog
+        className={classes.dialog}
+        open={props.dialogOpen}
+        classes={{ paper: classes.dialogPaper }}
+      >
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        <DialogActions>
+          <Button
+            onClick={props.okayButtonHandler}
+            variant="contained"
+            color="primary"
+          >
+            Okay
+        </Button>
+        </DialogActions>
+      </Dialog>
+    );
 
   return (
     <Paper className={classes.backgroundPaper} elevation={10}>
@@ -105,29 +105,13 @@ const PubsList = (props) => {
               const droppableColumnClassName =
                 snapshot.isDraggingOver ? classes.container : '';
 
-              const iconsForIndex = (index) => {
-                return props.pubs.length === 1 ? [First, Last] :
-                  index === 0 ? [First] :
-                    index === props.pubs.length - 1 ? [Last] : [];
-
-              };
-
-              const pubElements = props.pubs.map((pub, index) => (
-                <Pub
-                  key={pub.id}
-                  draggableId={pub.id}
-                  index={index}
-                  icons={iconsForIndex(index)}
-                />
-              ));
-
               return (
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                   className={droppableColumnClassName}
                 >
-                  {pubElements}
+                  <InnerPubsList pubs={props.pubs} />
                   {provided.placeholder}
                 </div>
               );

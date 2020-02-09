@@ -17,7 +17,8 @@ const useStyles = makeStyles({
     backgroundColor: 'rgb(20, 20, 20)',
     padding: '30px',
     maxHeight: '90%',
-    display: 'flex'
+    display: 'flex',
+    flexDirection: 'column'
   },
   list: {
     width: '500px',
@@ -41,7 +42,8 @@ const useStyles = makeStyles({
     width: '480px',
     '@media (max-width:850px)': {
       width: '280px'
-    }
+    },
+    marginTop: '6px'
   },
   dialog: {
     // Prevent the user from selecting the text.
@@ -61,6 +63,38 @@ const useStyles = makeStyles({
 
 const PubsList = (props) => {
   const classes = useStyles();
+
+  const dialogTitle = props.pubsLimit === 12 ?
+    `The Golden Mile consists of ${props.pubsLimit} pubs. You can't add more than that.` :
+    `You can't add more than ${props.pubsLimit} pubs.`;
+
+  const addPubButtonElement = props.pubs.length < props.pubsLimit ?
+    <Button
+      className={classes.button}
+      variant="contained"
+      color="primary"
+      size="large"
+      endIcon={<AddCircleOutlineIcon />}
+      onClick={props.addPubButtonHandler}
+    >
+      Add Pub
+  </Button> :
+    <Dialog
+      className={classes.dialog}
+      open={props.dialogOpen}
+      classes={{ paper: classes.dialogPaper }}
+    >
+      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogActions>
+        <Button
+          onClick={props.okayButtonHandler}
+          variant="contained"
+          color="primary"
+        >
+          Okay
+    </Button>
+      </DialogActions>
+    </Dialog>;
 
   return (
     <Paper className={classes.backgroundPaper} elevation={10}>
@@ -87,38 +121,6 @@ const PubsList = (props) => {
                 />
               ));
 
-              const dialogTitle = props.pubsLimit === 12 ?
-                `The Golden Mile consists of ${props.pubsLimit} pubs. You can't add more than that.` :
-                `You can't add more than ${props.pubsLimit} pubs.`;
-
-              const addPubButtonElement = props.pubs.length < props.pubsLimit ?
-                <Button
-                  className={classes.button}
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  endIcon={<AddCircleOutlineIcon />}
-                  onClick={props.addPubButtonHandler}
-                >
-                  Add Pub
-                </Button> :
-                <Dialog
-                  className={classes.dialog}
-                  open={props.dialogOpen}
-                  classes={{ paper: classes.dialogPaper }}
-                >
-                  <DialogTitle>{dialogTitle}</DialogTitle>
-                  <DialogActions>
-                    <Button
-                      onClick={props.okayButtonHandler}
-                      variant="contained"
-                      color="primary"
-                    >
-                      Okay
-                  </Button>
-                  </DialogActions>
-                </Dialog>;
-
               return (
                 <div
                   {...provided.droppableProps}
@@ -127,13 +129,13 @@ const PubsList = (props) => {
                 >
                   {pubElements}
                   {provided.placeholder}
-                  {addPubButtonElement}
                 </div>
               );
             }}
           </Droppable>
         </DragDropContext>
       </List>
+      {addPubButtonElement}
     </Paper>
   );
 };

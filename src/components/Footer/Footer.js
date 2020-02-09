@@ -7,15 +7,23 @@ import Box from '@material-ui/core/Box';
 const useStyles = makeStyles({
   footer: {
     position: 'absolute',
-    left: '0',
-    bottom: '0',
-    right: '0',
-    height: '60px',
-    background: '#000000',
-    color: 'white',
+    left: '0px',
+    bottom: '0px',
+    right: '0px',
+    height: '56px',
+    background: 'rgb(0, 0, 0)',
+    color: 'rgb(255,255,255)',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    // Prevent the user from selecting the text.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
   }
 });
 
@@ -27,9 +35,9 @@ const Footer = () => {
       <Typography variant="h6">
         <Box fontStyle="italic">
           Inspired by&nbsp;
-        <Link href="https://www.imdb.com/title/tt1213663/" color="secondary" target="_blank">
+          <Link href="https://www.imdb.com/title/tt1213663/" color="secondary" target="_blank">
             The World's End
-        </Link>
+          </Link>
         </Box>
       </Typography>
     </div>

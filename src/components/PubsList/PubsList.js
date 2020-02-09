@@ -14,9 +14,12 @@ const useStyles = makeStyles({
   backgroundPaper: {
     backgroundColor: 'rgb(20, 20, 20)',
     padding: '30px',
-    maxHeight: '90%',
+    maxHeight: 'calc(52% - 60px);',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    '@media (max-width:850px)': {
+      maxHeight: 'calc(56% - 60px);'
+    }
   },
   list: {
     width: '500px',

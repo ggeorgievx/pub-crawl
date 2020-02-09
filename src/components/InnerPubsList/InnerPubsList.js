@@ -8,7 +8,6 @@ const InnerPubList = (props) => {
     return props.pubs.length === 1 ? [First, Last] :
       index === 0 ? [First] :
         index === props.pubs.length - 1 ? [Last] : [];
-
   };
 
   const pubElements = props.pubs.map((pub, index) => (

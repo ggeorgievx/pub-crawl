@@ -2,6 +2,7 @@ import React from 'react';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import PropTypes from 'prop-types';
+import { forbidExtraProps } from 'airbnb-prop-types';
 
 const Layout = (props) => (
   <>
@@ -11,8 +12,8 @@ const Layout = (props) => (
   </>
 );
 
-Layout.propTypes = {
+Layout.propTypes = forbidExtraProps({
   children: PropTypes.arrayOf(PropTypes.element).isRequired
-};
+});
 
 export default Layout;

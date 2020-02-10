@@ -3,6 +3,7 @@ import Pub from '../../components/Pub/Pub';
 import { ReactComponent as First } from '../../assets/images/first.svg';
 import { ReactComponent as Last } from '../../assets/images/last.svg';
 import PropTypes from 'prop-types';
+import { forbidExtraProps } from 'airbnb-prop-types';
 
 const InnerPubList = (props) => {
   const iconsForIndex = (index) => {
@@ -24,11 +25,11 @@ const InnerPubList = (props) => {
   return (pubElements);
 };
 
-InnerPubList.propTypes = {
+InnerPubList.propTypes = forbidExtraProps({
   pubs: PropTypes.arrayOf(PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   })).isRequired
-};
+});
 
 export default memo(InnerPubList);

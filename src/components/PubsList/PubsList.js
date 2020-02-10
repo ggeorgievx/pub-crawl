@@ -6,6 +6,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import InnerPubsList from '../../components/InnerPubsList/InnerPubsList';
 import AddPub from '../AddPub/AddPub';
 import PropTypes from 'prop-types';
+import { forbidExtraProps } from 'airbnb-prop-types';
 
 const useStyles = makeStyles({
   backgroundPaper: {
@@ -39,7 +40,10 @@ const PubsList = (props) => {
   return (
     <Paper className={classes.backgroundPaper} elevation={10}>
       <List className={classes.list}>
-        <DragDropContext onDragEnd={props.onDragEndHandler}>
+        <DragDropContext
+          onDragStart={props.onDragStartHandler}
+          onDragEnd={props.onDragEndHandler}
+        >
           <Droppable droppableId="0">
             {(provided) => {
               return (
@@ -67,16 +71,18 @@ const PubsList = (props) => {
   );
 };
 
-PubsList.propTypes = {
-  onDragEndHandler: PropTypes.func.isRequired,
+PubsList.propTypes = forbidExtraProps({
+  onDragStartHandler: PropTypes.func.isRequired,
+  onDragEndHandler: PropTypes.func,
   pubs: PropTypes.arrayOf(PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   })).isRequired,
   pubsLimit: PropTypes.number.isRequired,
   addPubButtonHandler: PropTypes.func.isRequired,
+  autocompleteOpen: PropTypes.bool.isRequired,
   onPlaceSelected: PropTypes.func.isRequired,
   autocompleteKeyPressed: PropTypes.func.isRequired
-};
+});
 
 export default PubsList;

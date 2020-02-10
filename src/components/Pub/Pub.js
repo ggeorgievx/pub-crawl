@@ -5,6 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Draggable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
+import { forbidExtraProps } from 'airbnb-prop-types';
 
 const useStyles = makeStyles({
   card: {
@@ -79,11 +80,11 @@ const Pub = (props) => {
   );
 };
 
-Pub.propTypes = {
+Pub.propTypes = forbidExtraProps({
   draggableId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   icons: PropTypes.arrayOf(PropTypes.object).isRequired
-};
+});
 
 export default Pub;

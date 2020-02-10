@@ -42,6 +42,12 @@ const useStyles = makeStyles({
   dialogPaper: {
     backgroundColor: 'rgb(20, 20, 20)',
     color: 'rgb(255, 255, 255)'
+  },
+  disablePointerEvents: {
+    pointerEvents: 'none'
+  },
+  enablePointerEvents: {
+    pointerEvents: 'auto'
   }
 });
 
@@ -67,7 +73,12 @@ const Create = () => {
     });
   };
 
+  const onDragStartHandler = () => {
+    document.body.className = classes.disablePointerEvents;
+  };
   const onDragEndHandler = (result) => {
+    document.body.className = classes.enablePointerEvents;
+
     const { destination, source } = result;
 
     // Dropped outside.
@@ -146,6 +157,7 @@ const Create = () => {
       <PubsList
         pubs={pubs}
         pubsLimit={pubsLimit}
+        onDragStartHandler={onDragStartHandler}
         onDragEndHandler={onDragEndHandler}
         addPubButtonHandler={addPubButtonHandler}
         autocompleteOpen={autocompleteOpen}

@@ -58,7 +58,7 @@ const Pub = (props) => {
               <div className={classes.row}>
                 <div className={classes.column}>
                   <Typography noWrap variant="h5" component="h2">
-                    {props.draggableId}. Crafter
+                    {`${props.index + 1}. ${props.draggableId}`}
                   </Typography>
                   <Typography color="secondary">
                     3 am - 10 pm

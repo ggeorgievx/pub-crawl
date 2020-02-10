@@ -17,8 +17,7 @@ const Map = () => {
         fullscreenControl: false,
         streetViewControl: false
       }}
-    >
-    </GoogleMap>
+    />
   );
 };
 

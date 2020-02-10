@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import PubsList from '../../components/PubsList/PubsList';
 import Map from '../../components/Map/Map';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles({
   create: {
@@ -16,7 +20,7 @@ const useStyles = makeStyles({
   container: {
     height: '40%',
     width: 'calc(100% - 40px);',
-    margin: '30px 20px 30px 20px',
+    margin: '20px 20px 30px 20px',
     '@media (max-width:850px)': {
       margin: '10px'
     }
@@ -24,6 +28,20 @@ const useStyles = makeStyles({
   map: {
     height: '100%',
     width: '100%'
+  },
+  dialog: {
+    // Prevent the user from selecting the text.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
+  },
+  dialogPaper: {
+    backgroundColor: 'rgb(20, 20, 20)',
+    color: 'rgb(255, 255, 255)'
   }
 });
 
@@ -31,9 +49,24 @@ const Create = () => {
   const classes = useStyles();
 
   const [pubs, setPubs] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 
-  const pubsLimit = process.env.NODE_ENV === 'production' ? 12 : 8;
+  const pubsLimit = process.env.NODE_ENV === 'production' ? 12 : 4;
+  const googleMapUrl = 1 ?
+    `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places` :
+    'https://maps.googleapis.com/maps/api/js?libraries=places';
+
+  const dialogTitle = pubsLimit === 12 ?
+    `The Golden Mile consists of ${pubsLimit} pubs. You can't add any more pubs, drunkard! 🍻` :
+    `You reached the limit of ${pubsLimit} pubs, drunkard! 🍻`;
+
+  const okayButtonHandler = () => {
+    setDialogOpen(() => {
+      return false;
+    });
+  };
+
   const onDragEndHandler = (result) => {
     const { destination, source } = result;
 
@@ -62,28 +95,42 @@ const Create = () => {
     });
   };
   const addPubButtonHandler = () => {
+    setAutocompleteOpen(() => {
+      return true;
+    });
+  };
+  const onPlaceSelected = (place) => {
     setPubs((oldPubs) => {
       const newPubs = [
         ...oldPubs
       ];
 
-      if (oldPubs.length < pubsLimit) {
-        newPubs.push({
-          id: `${oldPubs.length}`,
-          name: `${oldPubs.length}.Crafter`
+      newPubs.push({
+        id: place.place_id,
+        name: place.place_id
+      });
+
+      if (newPubs.length === pubsLimit) {
+        setDialogOpen(() => {
+          return true;
         });
       }
 
       return newPubs;
     });
+
+    setAutocompleteOpen(() => {
+      return false;
+    });
   };
-  const okayButtonHandler = () => {
-    setDialogOpen(false);
+  const autocompleteKeyPressed = (event) => {
+    if (event.key === 'Escape') {
+      setAutocompleteOpen(() => {
+        return false;
+      });
+    }
   };
 
-  const googleMapUrl = process.env.NODE_ENV === 'production' ?
-    `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}` :
-    'https://maps.googleapis.com/maps/api/js';
   const loadingElement = (<div className={classes.container} />);
   const containerElement = (<div className={classes.container} />);
   const mapElement = (<div className={classes.map} />);
@@ -98,12 +145,31 @@ const Create = () => {
       />
       <PubsList
         pubs={pubs}
-        dialogOpen={dialogOpen}
         pubsLimit={pubsLimit}
         onDragEndHandler={onDragEndHandler}
         addPubButtonHandler={addPubButtonHandler}
-        okayButtonHandler={okayButtonHandler}
+        autocompleteOpen={autocompleteOpen}
+        onPlaceSelected={onPlaceSelected}
+        autocompleteKeyPressed={autocompleteKeyPressed}
       />
+      {dialogOpen &&
+        <Dialog
+          className={classes.dialog}
+          open={dialogOpen}
+          classes={{ paper: classes.dialogPaper }}
+        >
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogActions>
+            <Button
+              onClick={okayButtonHandler}
+              variant="contained"
+              color="primary"
+            >
+              Okay
+            </Button>
+          </DialogActions>
+        </Dialog>
+      }
     </div>
   );
 };

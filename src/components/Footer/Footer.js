@@ -23,7 +23,9 @@ const useStyles = makeStyles({
     WebkitUserSelect: 'none',
     KhtmlUserSelect: 'none',
     MozUserSelect: 'none',
-    cursor: 'default'
+    cursor: 'default',
+    // Allow Draggables to be dragged over the footer.
+    zIndex: -1
   }
 });
 

@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import InnerPubsList from '../../components/InnerPubsList/InnerPubsList';
 import AddPub from '../AddPub/AddPub';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   backgroundPaper: {
@@ -64,6 +65,18 @@ const PubsList = (props) => {
       />
     </Paper>
   );
+};
+
+PubsList.propTypes = {
+  onDragEndHandler: PropTypes.func.isRequired,
+  pubs: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  })).isRequired,
+  pubsLimit: PropTypes.number.isRequired,
+  addPubButtonHandler: PropTypes.func.isRequired,
+  onPlaceSelected: PropTypes.func.isRequired,
+  autocompleteKeyPressed: PropTypes.func.isRequired
 };
 
 export default PubsList;

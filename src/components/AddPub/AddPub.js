@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from 'react-google-autocomplete';
 import Button from '@material-ui/core/Button';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   button: {
@@ -54,6 +55,15 @@ const AddPub = (props) => {
       }
     </>
   );
+};
+
+AddPub.propTypes = {
+  autocompleteOpen: PropTypes.bool.isRequired,
+  pubsLength: PropTypes.number.isRequired,
+  pubsLimit: PropTypes.number.isRequired,
+  addPubButtonHandler: PropTypes.func.isRequired,
+  onPlaceSelected: PropTypes.func.isRequired,
+  autocompleteKeyPressed: PropTypes.func.isRequired
 };
 
 export default AddPub;

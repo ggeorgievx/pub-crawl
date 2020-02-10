@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import Pub from '../../components/Pub/Pub';
 import { ReactComponent as First } from '../../assets/images/first.svg';
 import { ReactComponent as Last } from '../../assets/images/last.svg';
+import PropTypes from 'prop-types';
 
 const InnerPubList = (props) => {
   const iconsForIndex = (index) => {
@@ -14,12 +15,20 @@ const InnerPubList = (props) => {
     <Pub
       key={pub.id}
       draggableId={pub.id}
+      name={pub.name}
       index={index}
       icons={iconsForIndex(index)}
     />
   ));
 
   return (pubElements);
+};
+
+InnerPubList.propTypes = {
+  pubs: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  })).isRequired
 };
 
 export default memo(InnerPubList);

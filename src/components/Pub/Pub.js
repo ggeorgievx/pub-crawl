@@ -4,6 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Draggable } from 'react-beautiful-dnd';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
   card: {
@@ -58,7 +59,7 @@ const Pub = (props) => {
               <div className={classes.row}>
                 <div className={classes.column}>
                   <Typography noWrap variant="h5" component="h2">
-                    {`${props.index + 1}. ${props.draggableId}`}
+                    {`${props.index + 1}. ${props.name}`}
                   </Typography>
                   <Typography color="secondary">
                     3 am - 10 pm
@@ -76,6 +77,13 @@ const Pub = (props) => {
       </Draggable>
     </div>
   );
+};
+
+Pub.propTypes = {
+  draggableId: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  icons: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default Pub;

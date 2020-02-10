@@ -30,6 +30,17 @@ const useStyles = makeStyles({
 const AddPub = (props) => {
   const classes = useStyles();
 
+  const fields = [
+    'place_id',
+    'formatted_address',
+    'geometry.location',
+    'icon',
+    'name',
+    'opening_hours',
+    'price_level',
+    'rating'
+  ];
+
   return (
     <>
       {(!props.autocompleteOpen && !(props.pubsLength === props.pubsLimit)) &&
@@ -52,6 +63,7 @@ const AddPub = (props) => {
           placeholder='Find Pubs 🔎'
           onKeyDown={props.autocompleteKeyPressed}
           autoFocus={true}
+          fields={fields}
         />
       }
     </>

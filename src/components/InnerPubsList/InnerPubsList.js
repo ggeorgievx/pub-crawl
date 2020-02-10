@@ -14,7 +14,7 @@ const InnerPubList = (props) => {
 
   const pubElements = props.pubs.map((pub, index) => (
     <Pub
-      key={pub.id}
+      key={`${index}-${pub.id}`}
       draggableId={`${index}-${pub.id}`}
       name={pub.name}
       index={index}

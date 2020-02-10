@@ -11,7 +11,7 @@ import { forbidExtraProps } from 'airbnb-prop-types';
 const useStyles = makeStyles({
   backgroundPaper: {
     backgroundColor: 'rgb(20, 20, 20)',
-    padding: '30px',
+    padding: '22px 30px 30px 30px',
     maxHeight: 'calc(52% - 50px);',
     display: 'flex',
     flexDirection: 'column',
@@ -39,26 +39,28 @@ const PubsList = (props) => {
 
   return (
     <Paper className={classes.backgroundPaper} elevation={10}>
-      <List className={classes.list}>
-        <DragDropContext
-          onDragStart={props.onDragStartHandler}
-          onDragEnd={props.onDragEndHandler}
-        >
-          <Droppable droppableId="0">
-            {(provided) => {
-              return (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  <InnerPubsList pubs={props.pubs} />
-                  {provided.placeholder}
-                </div>
-              );
-            }}
-          </Droppable>
-        </DragDropContext>
-      </List>
+      {props.pubs.length > 0 &&
+        <List className={classes.list}>
+          <DragDropContext
+            onDragStart={props.onDragStartHandler}
+            onDragEnd={props.onDragEndHandler}
+          >
+            <Droppable droppableId="0">
+              {(provided) => {
+                return (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    <InnerPubsList pubs={props.pubs} />
+                    {provided.placeholder}
+                  </div>
+                );
+              }}
+            </Droppable>
+          </DragDropContext>
+        </List>
+      }
       <AddPub
         pubsLength={props.pubs.length}
         pubsLimit={props.pubsLimit}

@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from './components/Layout/Layout';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './components/Home/Home';
 import Create from './containers/Create/Create';
 import PubCrawls from './components/PubCrawls/PubCrawls';
@@ -10,11 +10,13 @@ import Credits from './components/Credits/Credits';
 const App = () => (
   <BrowserRouter>
     <Layout>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/create" component={Create} />
-      <Route exact path="/pubCrawls" component={PubCrawls} />
-      <Route exact path="/pubCrawl/:id" component={PubCrawl} />
-      <Route exact path="/credits" component={Credits} />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/create" component={Create} />
+        <Route exact path="/pubCrawls" component={PubCrawls} />
+        <Route exact path="/pubCrawl/:id" component={PubCrawl} />
+        <Route exact path="/credits" component={Credits} />
+      </Switch>
     </Layout>
   </BrowserRouter>
 );

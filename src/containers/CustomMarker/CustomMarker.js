@@ -13,21 +13,30 @@ const CustomMarker = (props) => {
       return true;
     });
   };
-
   const onMouseOutHandler = () => {
     setInfoMarkerOpen(() => {
       return false;
     });
   };
 
+  const icon = {
+    url: constants.PUB_MARKER_BASE64
+  };
+
+  if (props.pubMarkersInfoLength > 1) {
+    if (props.index === 0) {
+      icon.url = constants.FIRST_MARKER_BASE64;
+    } else if (props.index === props.pubMarkersInfoLength - 1) {
+      icon.url = constants.LAST_MARKER_BASE64;
+    }
+  }
+
   return (
     <Marker
       position={props.location}
       onMouseOver={onMouseOverHandler}
       onMouseOut={onMouseOutHandler}
-      icon={{
-        url: constants.PUB_MARKER_BASE64
-      }}
+      icon={icon}
     >
       {infoMarkerOpen && (
         <InfoWindow>
@@ -45,7 +54,9 @@ CustomMarker.propTypes = forbidExtraProps({
   location: PropTypes.shape({
     lat: PropTypes.number.isRequired,
     lng: PropTypes.number.isRequired
-  }).isRequired
+  }).isRequired,
+  index: PropTypes.number.isRequired,
+  pubMarkersInfoLength: PropTypes.number.isRequired
 });
 
 export default CustomMarker;

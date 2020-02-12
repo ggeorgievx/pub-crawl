@@ -13,8 +13,8 @@ const App = () => (
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/create" component={Create} />
-        <Route exact path="/pubCrawls" component={PubCrawls} />
-        <Route exact path="/pubCrawl/:id" component={PubCrawl} />
+        <Route exact path="/pub-crawls" component={PubCrawls} />
+        <Route exact path="/pub-crawl/:id" component={PubCrawl} />
         <Route exact path="/credits" component={Credits} />
       </Switch>
     </Layout>

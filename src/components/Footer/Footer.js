@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     bottom: '0px',
     right: '0px',
     height: '56px',
-    background: 'rgb(0, 0, 0)',
+    backgroundColor: 'rgb(0, 0, 0)',
     color: 'rgb(255,255,255)',
     display: 'flex',
     justifyContent: 'center',

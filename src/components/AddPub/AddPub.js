@@ -37,13 +37,12 @@ const AddPub = (props) => {
     'icon',
     'name',
     'opening_hours',
-    'price_level',
     'rating'
   ];
 
   return (
     <>
-      {(!props.autocompleteOpen && !(props.pubsLength === props.pubsLimit)) &&
+      {(!props.autocompleteOpen && !(props.pubsLength === props.pubsLimit)) && (
         <Button
           className={classes.button}
           variant="contained"
@@ -54,18 +53,18 @@ const AddPub = (props) => {
         >
           Add Pub
         </Button>
-      }
-      {props.autocompleteOpen &&
+      )}
+      {props.autocompleteOpen && (
         <Autocomplete
           className={classes.autocomplete}
           onPlaceSelected={props.onPlaceSelected}
           types={['establishment']}
           placeholder='Find Pubs 🔎'
           onKeyDown={props.autocompleteKeyPressed}
-          autoFocus={true}
           fields={fields}
+          autoFocus
         />
-      }
+      )}
     </>
   );
 };

@@ -75,7 +75,7 @@ const PubsList = (props) => {
 
 PubsList.propTypes = forbidExtraProps({
   onDragStartHandler: PropTypes.func.isRequired,
-  onDragEndHandler: PropTypes.func,
+  onDragEndHandler: PropTypes.func.isRequired,
   pubs: PropTypes.arrayOf(PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired

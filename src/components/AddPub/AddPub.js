@@ -9,16 +9,10 @@ import { forbidExtraProps } from 'airbnb-prop-types';
 const useStyles = makeStyles({
   button: {
     width: '480px',
-    '@media (max-width:850px)': {
-      width: '280px'
-    },
     marginTop: '6px'
   },
   autocomplete: {
     width: '464px',
-    '@media (max-width:850px)': {
-      width: '264px'
-    },
     marginTop: '6px',
     height: '42px',
     padding: '0px 0px 0px 16px',

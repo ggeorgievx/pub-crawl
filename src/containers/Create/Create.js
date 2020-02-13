@@ -20,10 +20,7 @@ const useStyles = makeStyles({
   container: {
     height: '40%',
     width: 'calc(100% - 40px);',
-    margin: '20px 20px 30px 20px',
-    '@media (max-width:850px)': {
-      margin: '10px'
-    }
+    margin: '20px 20px 30px 20px'
   },
   map: {
     height: '100%',

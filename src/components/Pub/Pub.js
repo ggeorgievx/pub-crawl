@@ -10,9 +10,6 @@ import { forbidExtraProps } from 'airbnb-prop-types';
 const useStyles = makeStyles({
   card: {
     width: '480px',
-    '@media (max-width:850px)': {
-      width: '280px'
-    },
     backgroundColor: 'rgb(46, 42, 50)',
     color: 'rgb(255,255,255)',
     marginBottom: '6px',

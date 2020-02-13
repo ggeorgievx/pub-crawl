@@ -34,20 +34,11 @@ const useStyles = makeStyles((theme) => ({
     WebkitUserSelect: 'none',
     KhtmlUserSelect: 'none',
     MozUserSelect: 'none',
-    cursor: 'default',
-    '@media (max-width:850px)': {
-      ...theme.typography.h4,
-      letterSpacing: '4px',
-      fontWeight: 300
-    }
+    cursor: 'default'
   },
   container: {
     display: 'flex',
-    justifyContent: 'center',
-    '@media (max-width:850px)': {
-      alignItems: 'center',
-      flexDirection: 'column'
-    }
+    justifyContent: 'center'
   },
   button: {
     margin: '2em'

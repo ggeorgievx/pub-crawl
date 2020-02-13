@@ -14,10 +14,7 @@ const useStyles = makeStyles({
     padding: '22px 30px 30px 30px',
     maxHeight: 'calc(52% - 50px);',
     display: 'flex',
-    flexDirection: 'column',
-    '@media (max-width:850px)': {
-      maxHeight: 'calc(56% - 50px);'
-    }
+    flexDirection: 'column'
   },
   list: {
     overflowY: 'auto',
@@ -27,9 +24,6 @@ const useStyles = makeStyles({
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: 'rgba(0,0,0,.3)',
       borderRadius: '20px'
-    },
-    '@media (max-width:850px)': {
-      width: '300px'
     }
   }
 });

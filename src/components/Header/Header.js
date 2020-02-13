@@ -8,12 +8,20 @@ const useStyles = makeStyles({
     height: '56px',
     backgroundColor: 'rgb(0, 0, 0)',
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    // Prevent the user from selecting the logo.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
   },
   icon: {
-    height: '50px',
-    marginTop: '3px',
-    marginBottom: '3px'
+    height: '48px',
+    marginTop: '4px',
+    marginBottom: '4px'
   }
 });
 

@@ -30,8 +30,8 @@ const Header = () => {
 
   return (
     <header className={classes.header}>
-      <Link className={classes.link} to="/">
-        <img src={Logo} alt="Logo" className={classes.icon} />
+      <Link to="/">
+        <img src={Logo} alt="Pub Crawl Logo" className={classes.icon} />
       </Link>
     </header>
   );

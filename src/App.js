@@ -6,6 +6,7 @@ import Create from './containers/Create/Create';
 import PubCrawls from './components/PubCrawls/PubCrawls';
 import PubCrawl from './components/PubCrawl/PubCrawl';
 import Credits from './components/Credits/Credits';
+import NotFound from './components/NotFound/NotFound';
 
 const App = () => (
   <BrowserRouter>
@@ -16,6 +17,7 @@ const App = () => (
         <Route exact path="/pub-crawls" component={PubCrawls} />
         <Route exact path="/pub-crawl/:id" component={PubCrawl} />
         <Route exact path="/credits" component={Credits} />
+        <Route exact path='*' component={NotFound} />
       </Switch>
     </Layout>
   </BrowserRouter>

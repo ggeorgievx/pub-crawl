@@ -1,0 +1,12 @@
+{
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.tabSize": 2,
+  "editor.wordWrap": "wordWrapColumn",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "todo.timekeeping.created.enabled": true,
+  "todo.timekeeping.created.format": "ddd DD/MM/YYYY HH:mm",
+  "todo.timekeeping.finished.format": "ddd DD/MM/YYYY HH:mm",
+  "todo.timekeeping.started.format": "ddd DD/MM/YYYY HH:mm"
+}

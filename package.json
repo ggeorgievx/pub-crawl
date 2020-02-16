@@ -44,7 +44,8 @@
         2,
         "single"
       ],
-      "no-console": 2
+      "no-console": 2,
+      "no-extra-semi": 2
     }
   },
   "browserslist": {

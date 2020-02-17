@@ -16,12 +16,20 @@ const useStyles = makeStyles({
     WebkitUserSelect: 'none',
     KhtmlUserSelect: 'none',
     MozUserSelect: 'none',
-    cursor: 'default'
+    cursor: 'default',
+    '@media (min-width:3000px)': {
+      height: '100px'
+    }
   },
   icon: {
     height: '48px',
     marginTop: '4px',
-    marginBottom: '4px'
+    marginBottom: '4px',
+    '@media (min-width:3000px)': {
+      height: '84px',
+      marginTop: '8px',
+      marginBottom: '8px'
+    }
   }
 });
 

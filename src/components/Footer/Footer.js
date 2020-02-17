@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     right: '0px',
     height: '56px',
     backgroundColor: 'rgb(0, 0, 0)',
-    color: 'rgb(255,255,255)',
+    color: 'rgb(255, 255, 255)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

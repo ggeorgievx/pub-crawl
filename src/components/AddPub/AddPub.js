@@ -5,19 +5,25 @@ import Button from '@material-ui/core/Button';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import PropTypes from 'prop-types';
 import { forbidExtraProps } from 'airbnb-prop-types';
+import constants from '../../constants';
 
 const useStyles = makeStyles({
   button: {
     width: '480px',
-    marginTop: '6px'
+    marginTop: '6px',
+    '@media (max-width:1200px)': {
+      width: '282px'
+    }
   },
   autocomplete: {
     width: '464px',
-    marginTop: '6px',
-    height: '42px',
-    padding: '0px 0px 0px 16px',
+    padding: '12px 0px 12px 16px',
     borderWidth: '0px',
-    fontSize: '15px'
+    fontSize: '15px',
+    marginTop: '6px',
+    '@media (max-width:1200px)': {
+      width: '266px'
+    }
   }
 });
 
@@ -36,7 +42,7 @@ const AddPub = (props) => {
 
   return (
     <>
-      {(!props.autocompleteOpen && !(props.pubsLength === props.pubsLimit)) && (
+      {(!props.autocompleteOpen && !(props.pubsLength === constants.MAX_PUBS_COUNT)) && (
         <Button
           className={classes.button}
           variant="contained"
@@ -51,10 +57,10 @@ const AddPub = (props) => {
       {props.autocompleteOpen && (
         <Autocomplete
           className={classes.autocomplete}
-          onPlaceSelected={props.onPlaceSelected}
+          onPlaceSelected={props.placeSelectedHandler}
           types={['establishment']}
           placeholder='Find Pubs 🔎'
-          onKeyDown={props.autocompleteKeyPressed}
+          onKeyDown={props.autocompleteKeyDownHandler}
           fields={fields}
           autoFocus
         />
@@ -66,10 +72,9 @@ const AddPub = (props) => {
 AddPub.propTypes = forbidExtraProps({
   autocompleteOpen: PropTypes.bool.isRequired,
   pubsLength: PropTypes.number.isRequired,
-  pubsLimit: PropTypes.number.isRequired,
   addPubButtonHandler: PropTypes.func.isRequired,
-  onPlaceSelected: PropTypes.func.isRequired,
-  autocompleteKeyPressed: PropTypes.func.isRequired
+  placeSelectedHandler: PropTypes.func.isRequired,
+  autocompleteKeyDownHandler: PropTypes.func.isRequired
 });
 
 export default AddPub;

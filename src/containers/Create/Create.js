@@ -1,44 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer, useRef, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import PubsList from '../../components/PubsList/PubsList';
-import Map from '../../components/Map/Map';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
+import RoomIcon from '@material-ui/icons/Room';
+import EventNoteIcon from '@material-ui/icons/EventNote';
+import InfoIcon from '@material-ui/icons/Info';
+import CustomStepper from '../../components/CustomStepper/CustomStepper';
+import PubList from '../../components/PubList/PubList';
+import PubCrawlDetails from '../../components/PubCrawlDetails/PubCrawlDetails';
+import {
+  normalizePlace,
+  calculatePubCrawlDetails
+} from '../../utils';
+import PubInfoList from '../../components/PubInfoList/PubInfoList';
+import constants from '../../constants';
 
 const useStyles = makeStyles({
   create: {
-    backgroundColor: 'rgb(36, 36, 36)',
+    backgroundColor: 'rgb(33, 33, 33)',
     position: 'fixed',
     width: '100%',
-    height: 'calc(100% - 112px);',
+    height: 'calc(100% - 112px)',
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  container: {
-    height: '40%',
-    width: 'calc(100% - 40px);',
-    margin: '20px 20px 30px 20px'
-  },
-  map: {
-    height: '100%',
-    width: '100%'
-  },
-  dialog: {
-    // Prevent the user from selecting the text.
-    userSelect: 'none',
-    msUserSelect: 'none',
-    msTouchSelect: 'none',
-    WebkitUserSelect: 'none',
-    KhtmlUserSelect: 'none',
-    MozUserSelect: 'none',
-    cursor: 'default'
-  },
-  dialogPaper: {
-    backgroundColor: 'rgb(20, 20, 20)',
-    color: 'rgb(255, 255, 255)'
+    justifyContent: 'center',
+    '@media (min-width:3000px)': {
+      height: 'calc(100% - 156px)'
+    }
   },
   disablePointerEvents: {
     pointerEvents: 'none'
@@ -50,30 +35,117 @@ const useStyles = makeStyles({
 
 const Create = () => {
   const classes = useStyles();
+  const [activeStep, setActiveStep] = useState(0);
+  const [pubCrawlStartTime, setPubCrawlStartTime] = useState('7:30 pm');
+  const [pubCrawlName, setPubCrawlName] = useState('');
+  const directionsService = useRef(null);
+  const legsDurations = useRef([]);
+  const totalPubCrawlDistanceInMeters = useRef(0);
+  const totalPubCrawlDurationInMinutes = useRef(0);
 
-  const [pubs, setPubs] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [autocompleteOpen, setAutocompleteOpen] = useState(false);
+  const numberOfSteps = 3;
+  const icons = {
+    1: <RoomIcon />,
+    2: <EventNoteIcon />,
+    3: <InfoIcon />
+  };
 
-  const pubsLimit = process.env.NODE_ENV === 'production' ? 12 : 4;
-  const googleMapUrl = 1 ?
-    `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places` :
-    'https://maps.googleapis.com/maps/api/js?libraries=places';
+  const pubCrawlInfoReducer = (pubCrawlInfo, action) => {
+    switch (action.type) {
+      case 'setDialogOpenFalse':
+        return {
+          ...pubCrawlInfo,
+          dialogOpen: false
+        };
+      case 'setPubs':
+        return {
+          ...pubCrawlInfo,
+          pubs: action.newPubs,
+          directions: action.newDirections
+        };
+      case 'setAutocompleteOpenTrue':
+        return {
+          ...pubCrawlInfo,
+          autocompleteOpen: true
+        };
+      case 'setAutocompleteOpenFalse':
+        return {
+          ...pubCrawlInfo,
+          autocompleteOpen: false
+        };
+      case 'addNewPub':
+        const newPub = normalizePlace(action.place);
+        const newPubs = [...pubCrawlInfo.pubs, newPub];
+        const dialogOpen = newPubs.length === constants.MAX_PUBS_COUNT;
+        const isFirstPub = pubCrawlInfo.pubs.length === 0;
 
-  const dialogTitle = pubsLimit === 12 ?
-    `The Golden Mile consists of ${pubsLimit} pubs. You can't add any more pubs, drunkard! 🍻` :
-    `You reached the limit of ${pubsLimit} pubs, drunkard! 🍻`;
+        return {
+          ...pubCrawlInfo,
+          pubs: newPubs,
+          dialogOpen: dialogOpen,
+          autocompleteOpen: false,
+          directions: action.newDirections,
+          mapCenter: isFirstPub ? newPub.location : pubCrawlInfo.mapCenter,
+          zoom: isFirstPub ? 12 : pubCrawlInfo.zoom
+        };
+      default:
+        return pubCrawlInfo;
+    }
+  };
 
-  const okayButtonHandler = () => {
-    setDialogOpen(() => {
-      return false;
+  const [pubCrawlInfo, dispatchPubCrawlInfoUpdate] = useReducer(
+    pubCrawlInfoReducer,
+    {
+      pubs: [],
+      directions: null,
+      dialogOpen: false,
+      autocompleteOpen: false,
+      // https://www.latlong.net/place/new-york-city-ny-usa-1848.html
+      // Alternatively prompt the user to share their geolocation and center there.
+      mapCenter: {
+        lat: 40.730610, lng: -73.935242
+      },
+      zoom: 5
+    }
+  );
+
+  const sendDirectionsResultRequest = (
+    directionsOptions,
+    directionsCallback
+  ) => {
+    if (directionsService.current === null) {
+      directionsService.current = new window.google.maps.DirectionsService();
+    }
+
+    const directionsRequest = {
+      travelMode: window.google.maps.TravelMode.WALKING,
+      ...directionsOptions
+    };
+
+    directionsService.current.route(directionsRequest, directionsCallback);
+  };
+
+  const backButtonHandler = () => {
+    setActiveStep((prevActiveStep) => {
+      return prevActiveStep - 1;
     });
   };
-
-  const onDragStartHandler = () => {
+  const nextButtonHandler = () => {
+    if (activeStep < numberOfSteps - 1) {
+      setActiveStep((prevActiveStep) => {
+        return prevActiveStep + 1;
+      });
+    } else if (activeStep === numberOfSteps - 1) {
+      console.log('Saving Pub Crawl...');
+    }
+  };
+  const okayButtonHandler = () => {
+    dispatchPubCrawlInfoUpdate({ type: 'setDialogOpenFalse' });
+  };
+  const dragStartHandler = () => {
     document.body.className = classes.disablePointerEvents;
   };
-  const onDragEndHandler = (result) => {
+  const dragEndHandler = (result) => {
     document.body.className = classes.enablePointerEvents;
 
     const { destination, source } = result;
@@ -91,94 +163,209 @@ const Create = () => {
       return;
     }
 
-    setPubs((oldPubs) => {
-      const newPubs = [
-        ...oldPubs
-      ];
+    const newPubs = [
+      ...pubCrawlInfo.pubs
+    ];
 
-      const [deletedItem] = newPubs.splice(sourceIndex, 1);
-      newPubs.splice(destinationIndex, 0, deletedItem);
+    const [deletedPub] = newPubs.splice(sourceIndex, 1);
+    newPubs.splice(destinationIndex, 0, deletedPub);
 
-      return newPubs;
-    });
+    const waypoints = [...newPubs].map((pub) => ({
+      location: pub.location,
+      stopover: true
+    }));
+    const originWaypoint = waypoints.shift().location;
+    const destinationWaypoint = waypoints.pop().location;
+
+    const directionsOptions = {
+      origin: originWaypoint,
+      destination: destinationWaypoint,
+      waypoints: waypoints
+    };
+
+    const directionsCallback = (directionsResult, directionsStatus) => {
+      dispatchPubCrawlInfoUpdate({
+        type: 'setPubs',
+        newPubs: newPubs,
+        newDirections: directionsStatus === window.google.maps.DirectionsStatus.OK ? directionsResult : null
+      });
+    };
+
+    sendDirectionsResultRequest(directionsOptions, directionsCallback);
   };
   const addPubButtonHandler = () => {
-    setAutocompleteOpen(() => {
-      return true;
-    });
+    dispatchPubCrawlInfoUpdate({ type: 'setAutocompleteOpenTrue' });
   };
-  const onPlaceSelected = (place) => {
-    setPubs((oldPubs) => {
-      const newPubs = [
-        ...oldPubs
-      ];
+  const removePubButtonHandler = (index) => {
+    const newPubs = [
+      ...pubCrawlInfo.pubs
+    ];
 
-      newPubs.push({
-        id: place.place_id,
-        name: place.place_id
-      });
+    newPubs.splice(index, 1);
 
-      if (newPubs.length === pubsLimit) {
-        setDialogOpen(() => {
-          return true;
+    if (newPubs.length > 1) {
+      const waypoints = [...newPubs].map((pub) => ({
+        location: pub.location,
+        stopover: true
+      }));
+      const originWaypoint = waypoints.shift().location;
+      const destinationWaypoint = waypoints.pop().location;
+
+      const directionsOptions = {
+        origin: originWaypoint,
+        destination: destinationWaypoint,
+        waypoints: waypoints
+      };
+
+      const directionsCallback = (directionsResult, directionsStatus) => {
+        dispatchPubCrawlInfoUpdate({
+          type: 'setPubs',
+          newPubs: newPubs,
+          newDirections: directionsStatus === window.google.maps.DirectionsStatus.OK ? directionsResult : null
         });
-      }
+      };
 
-      return newPubs;
-    });
-
-    setAutocompleteOpen(() => {
-      return false;
-    });
-  };
-  const autocompleteKeyPressed = (event) => {
-    if (event.key === 'Escape') {
-      setAutocompleteOpen(() => {
-        return false;
+      sendDirectionsResultRequest(directionsOptions, directionsCallback);
+    } else {
+      dispatchPubCrawlInfoUpdate({
+        type: 'setPubs',
+        newPubs: newPubs,
+        newDirections: null
       });
     }
   };
+  const sliderChangeHandler = (index, value) => {
+    const newPubs = [
+      ...pubCrawlInfo.pubs
+    ];
 
-  const loadingElement = (<div className={classes.container} />);
-  const containerElement = (<div className={classes.container} />);
-  const mapElement = (<div className={classes.map} />);
+    newPubs[index].duration = value;
+
+    dispatchPubCrawlInfoUpdate({
+      type: 'setPubs',
+      newPubs: newPubs,
+      newDirections: pubCrawlInfo.directions
+    });
+  };
+  const placeSelectedHandler = (place) => {
+    // Handle the case when the user presses 'Enter' without selecting a place.
+    // The placeSelectedHandler handler is fired before onKeyDown.
+    if (typeof place.geometry === 'undefined') {
+      return;
+    }
+
+    if (pubCrawlInfo.pubs.length > 0) {
+      const newPubPlaceholder = place.geometry;
+
+      const waypoints = [...pubCrawlInfo.pubs, newPubPlaceholder].map((pub) => ({
+        location: pub.location,
+        stopover: true
+      }));
+      const origin = waypoints.shift().location;
+      const destination = waypoints.pop().location;
+
+      const directionsOptions = {
+        origin: origin,
+        destination: destination,
+        waypoints: waypoints
+      };
+
+      const directionsCallback = (directionsResult, directionsStatus) => {
+        dispatchPubCrawlInfoUpdate({
+          type: 'addNewPub',
+          place: place,
+          newDirections: directionsStatus === window.google.maps.DirectionsStatus.OK ? directionsResult : null
+        });
+      };
+
+      sendDirectionsResultRequest(directionsOptions, directionsCallback);
+    } else {
+      dispatchPubCrawlInfoUpdate({
+        type: 'addNewPub',
+        place: place,
+        newDirections: null
+      });
+    }
+  };
+  const autocompleteKeyDownHandler = (event) => {
+    if (event.key === 'Escape') {
+      dispatchPubCrawlInfoUpdate({ type: 'setAutocompleteOpenFalse' });
+    }
+  };
+  const pubCrawlNameChangeHandler = (event) => {
+    setPubCrawlName(event.target.value);
+  };
+  const startTimeChangeHandler = (data) => {
+    setPubCrawlStartTime(() => {
+      return data.formatted12;
+    });
+  };
+
+  // Calculate legsDurations, totalPubCrawlDistanceInMeters and
+  // totalPubCrawlDurationInMinutes when a new pub is added, a pub is removed or
+  // the order of the pubs has changed.
+  useMemo(() => {
+    const {
+      legsDurations: newLegsDirections,
+      totalPubCrawlDistanceInMeters: newTotalPubCrawlDistanceInMeters,
+      totalPubCrawlDurationInMinutes: newTotalPubCrawlDurationInMinutes
+    } = calculatePubCrawlDetails(pubCrawlInfo.pubs, pubCrawlInfo.directions);
+
+    legsDurations.current = newLegsDirections;
+    totalPubCrawlDistanceInMeters.current = newTotalPubCrawlDistanceInMeters;
+    totalPubCrawlDurationInMinutes.current = newTotalPubCrawlDurationInMinutes;
+  }, [pubCrawlInfo.pubs, pubCrawlInfo.directions]);
+
+  let valid = false;
+
+  const pubCrawlNameValid = (constants.MIN_PUB_CRAWL_NAME_LENGTH <= pubCrawlName.length && pubCrawlName.length <= constants.MAX_PUB_CRAWL_NAME_LENGTH);
+  if (
+    (activeStep === 0 && pubCrawlInfo.pubs.length > 0) ||
+    (activeStep === 1 && pubCrawlNameValid) ||
+    activeStep === 2
+  ) {
+    valid = true;
+  }
 
   return (
     <div className={classes.create}>
-      <Map
-        googleMapURL={googleMapUrl}
-        loadingElement={loadingElement}
-        containerElement={containerElement}
-        mapElement={mapElement}
-      />
-      <PubsList
-        pubs={pubs}
-        pubsLimit={pubsLimit}
-        onDragStartHandler={onDragStartHandler}
-        onDragEndHandler={onDragEndHandler}
-        addPubButtonHandler={addPubButtonHandler}
-        autocompleteOpen={autocompleteOpen}
-        onPlaceSelected={onPlaceSelected}
-        autocompleteKeyPressed={autocompleteKeyPressed}
-      />
-      {dialogOpen &&
-        <Dialog
-          className={classes.dialog}
-          open={dialogOpen}
-          classes={{ paper: classes.dialogPaper }}
-        >
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          <DialogActions>
-            <Button
-              onClick={okayButtonHandler}
-              variant="contained"
-              color="primary"
-            >
-              Okay
-            </Button>
-          </DialogActions>
-        </Dialog>
-      }
+      <CustomStepper
+        activeStep={activeStep}
+        nextButtonHandler={nextButtonHandler}
+        backButtonHandler={backButtonHandler}
+        numberOfSteps={numberOfSteps}
+        icons={icons}
+        valid={valid}
+        pubCrawlInfo={pubCrawlInfo}
+      >
+        <PubList
+          pubs={pubCrawlInfo.pubs}
+          dragStartHandler={dragStartHandler}
+          dragEndHandler={dragEndHandler}
+          addPubButtonHandler={addPubButtonHandler}
+          autocompleteOpen={pubCrawlInfo.autocompleteOpen}
+          placeSelectedHandler={placeSelectedHandler}
+          autocompleteKeyDownHandler={autocompleteKeyDownHandler}
+          removePubButtonHandler={removePubButtonHandler}
+          sliderChangeHandler={sliderChangeHandler}
+          dialogOpen={pubCrawlInfo.dialogOpen}
+          okayButtonHandler={okayButtonHandler}
+        />
+        <PubCrawlDetails
+          pubCrawlName={pubCrawlName}
+          pubCrawlStartTime={pubCrawlStartTime}
+          pubCrawlNameChangeHandler={pubCrawlNameChangeHandler}
+          startTimeChangeHandler={startTimeChangeHandler}
+        />
+        <PubInfoList
+          pubCrawlName={pubCrawlName}
+          totalPubCrawlDistanceInMeters={totalPubCrawlDistanceInMeters.current}
+          totalPubCrawlDurationInMinutes={totalPubCrawlDurationInMinutes.current}
+          pubs={pubCrawlInfo.pubs}
+          pubCrawlStartTime={pubCrawlStartTime}
+          legsDurations={legsDurations.current}
+        />
+      </CustomStepper>
     </div>
   );
 };

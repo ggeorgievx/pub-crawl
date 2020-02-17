@@ -13,14 +13,15 @@ import CustomMarker from '../../containers/CustomMarker/CustomMarker';
 const Map = (props) => {
   return (
     <GoogleMap
-      zoom={12}
-      defaultCenter={{ lat: 42.698334, lng: 23.319941 }}
+      zoom={props.zoom}
+      center={props.mapCenter}
       options={{
         styles: style,
         mapTypeControl: false,
         fullscreenControl: false,
         streetViewControl: false,
         clickableIcons: false,
+        zoomControl: false,
         minZoom: 5,
         maxZoom: 20
       }}
@@ -41,7 +42,7 @@ const Map = (props) => {
             suppressMarkers: true,
             polylineOptions: {
               clickable: false,
-              strokeColor: '#f3004d',
+              strokeColor: 'rgb(243, 0, 77)',
               strokeOpacity: .3
             }
           }}
@@ -52,13 +53,36 @@ const Map = (props) => {
 };
 
 Map.propTypes = forbidExtraProps({
-  pubMarkersInfo: PropTypes.arrayOf(PropTypes.shape({
+  pubMarkersInfo: PropTypes.arrayOf(PropTypes.exact({
     name: PropTypes.string.isRequired,
-    location: PropTypes.shape({
+    location: PropTypes.exact({
       lat: PropTypes.number.isRequired,
       lng: PropTypes.number.isRequired
     }).isRequired
-  }).isRequired).isRequired
+  }).isRequired).isRequired,
+  zoom: PropTypes.number.isRequired,
+  mapCenter: PropTypes.exact({
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired
+  }).isRequired,
+  directions: PropTypes.object
 });
 
-export default withScriptjs(withGoogleMap(Map));
+export default memo(
+  withScriptjs(withGoogleMap(Map)), (prevProps, newProps) => {
+    const prevPubMarkersInfo = JSON.stringify(prevProps.pubMarkersInfo);
+    const newPubMarkersInfo = JSON.stringify(newProps.pubMarkersInfo);
+
+    const prevMapCenter = JSON.stringify(prevProps.mapCenter);
+    const newMapCenter = JSON.stringify(newProps.mapCenter);
+
+    const prevContainerElementClassName = prevProps.containerElement.props.className;
+    const newContainerElementClassName = newProps.containerElement.props.className;
+
+    // Only rerender the Map component when the pubMarkersInfo, mapCenter or
+    // containerElement.className change.
+    return prevPubMarkersInfo === newPubMarkersInfo &&
+      prevMapCenter === newMapCenter &&
+      prevContainerElementClassName === newContainerElementClassName;
+  }
+);

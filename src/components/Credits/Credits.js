@@ -10,14 +10,22 @@ const useStyles = makeStyles({
     height: 'calc(100% - 112px)',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    // Prevent the user from selecting the text.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
   },
   flaticon: {
     color: 'rgb(255, 255, 255)'
   }
 });
 
-const NotFound = () => {
+const Credits = () => {
   const classes = useStyles();
 
   return (
@@ -39,9 +47,10 @@ const NotFound = () => {
         >
           www.flaticon.com
         </Link>
+        .
       </div>
     </div>
   );
 };
 
-export default NotFound;
+export default Credits;

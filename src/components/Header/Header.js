@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Logo from '../../assets/images/logo.png';
 import { Link } from 'react-router-dom';
+import AuthContext from '../../authContext';
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles({
   header: {
@@ -30,17 +32,31 @@ const useStyles = makeStyles({
       marginTop: '8px',
       marginBottom: '8px'
     }
+  },
+  picture: {
+    width: '48px',
+    height: '48px',
+    marginTop: '4px',
+    marginBottom: '4px',
+    marginLeft: '7px'
   }
 });
 
 const Header = () => {
   const classes = useStyles();
+  const auth = useContext(AuthContext);
 
   return (
     <header className={classes.header}>
       <Link to="/">
         <img src={Logo} alt="Pub Crawl Logo" className={classes.icon} />
       </Link>
+      <Avatar
+        alt={auth.currentUser !== null ? auth.currentUser.displayName : 'Guest'}
+        src={auth.currentUser !== null ? auth.currentUser.photoURL : ''}
+        className={classes.picture}
+      />
+      )}
     </header>
   );
 };

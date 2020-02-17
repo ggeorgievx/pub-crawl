@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Background from '../../assets/images/background.jpg';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => {
+
   return {
     home: {
       backgroundImage: `url(${Background})`,
@@ -60,16 +67,57 @@ const useStyles = makeStyles((theme) => {
     },
     button: {
       margin: '2em'
+    },
+    backdrop: {
+      zIndex: 1
     }
   };
 });
-
 const Home = () => {
   const classes = useStyles();
   const history = useHistory();
+  const [backdropOpen, setBackdropOpen] = useState(false);
+  const [snackbarSuccessOpen, setSnackbarSuccessOpen] = useState(false);
+  const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
 
+  const redirect = (success) => {
+    setBackdropOpen(() => {
+      return false;
+    });
+
+    setTimeout(() => {
+      history.push('/create');
+    }, 2000);
+
+    if (success) {
+      setSnackbarSuccessOpen(true);
+    } else {
+      setSnackbarErrorOpen(true);
+    }
+  };
+
+  const backdropClickHandler = () => {
+    setBackdropOpen(false);
+  };
   const guestButtonHandler = () => {
     history.push('/create');
+  };
+  const googleButtonHandler = () => {
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+    setBackdropOpen(() => {
+      return true;
+    });
+
+    firebase
+      .auth()
+      .signInWithPopup(googleAuthProvider)
+      .then(() => {
+        redirect(true);
+      })
+      .catch(() => {
+        redirect(false);
+      });
   };
 
   return (
@@ -96,12 +144,30 @@ const Home = () => {
               variant="contained"
               color="primary"
               size="large"
+              onClick={googleButtonHandler}
             >
               LOGIN WITH GOOGLE
             </Button>
           </Tooltip>
         </div>
       </div>
+      <Backdrop
+        className={classes.backdrop}
+        open={backdropOpen}
+        onClick={backdropClickHandler}
+      >
+        <CircularProgress color="secondary" />
+      </Backdrop>
+      <Snackbar open={snackbarSuccessOpen} autoHideDuration={1500}>
+        <MuiAlert elevation={6} variant="filled" severity="success">
+          Successfully logged in with Google. Continuing...
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={snackbarErrorOpen} autoHideDuration={1500}>
+        <MuiAlert elevation={6} variant="filled" severity="error">
+          Failed to login with Google. Continuing as guest...
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 };

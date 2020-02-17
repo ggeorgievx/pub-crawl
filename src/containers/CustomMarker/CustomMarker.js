@@ -8,14 +8,19 @@ import constants from '../../constants';
 const CustomMarker = (props) => {
   const [infoMarkerOpen, setInfoMarkerOpen] = useState(false);
 
-  const onMouseOverHandler = () => {
+  const markerOverHandler = () => {
     setInfoMarkerOpen(() => {
       return true;
     });
   };
-  const onMouseOutHandler = () => {
+  const markerOutHandler = () => {
     setInfoMarkerOpen(() => {
       return false;
+    });
+  };
+  const markerHandler = () => {
+    setInfoMarkerOpen((prevInfoMarkerOpen) => {
+      return !prevInfoMarkerOpen;
     });
   };
 
@@ -34,13 +39,15 @@ const CustomMarker = (props) => {
   return (
     <Marker
       position={props.location}
-      onMouseOver={onMouseOverHandler}
-      onMouseOut={onMouseOutHandler}
+      onClick={markerHandler}
+      onMouseOver={markerOverHandler}
+      onMouseOut={markerOutHandler}
       icon={icon}
+      animation={window.google.maps.Animation.DROP}
     >
       {infoMarkerOpen && (
         <InfoWindow>
-          <Typography variant="h6" component="h2">
+          <Typography variant="h6">
             {props.name}
           </Typography>
         </InfoWindow>
@@ -51,7 +58,7 @@ const CustomMarker = (props) => {
 
 CustomMarker.propTypes = forbidExtraProps({
   name: PropTypes.string.isRequired,
-  location: PropTypes.shape({
+  location: PropTypes.exact({
     lat: PropTypes.number.isRequired,
     lng: PropTypes.number.isRequired
   }).isRequired,

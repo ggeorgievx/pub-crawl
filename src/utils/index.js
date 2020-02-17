@@ -96,7 +96,7 @@ const extendPeriodA = (periodA, periodB) => {
 const normalizePeriods = (periods) => {
   // 24/7
   const TFS = Array.from({ length: 7 }).map(() => {
-    return [['00:00', '24:00']];
+    return [['00:00', '48:00']];
   });
 
   if ((periods.length === 0) ||

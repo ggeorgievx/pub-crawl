@@ -18,25 +18,11 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     padding: '30px',
     backgroundColor: 'rgb(33, 33, 33)',
-    '& .react-timekeeper': {
-      backgroundColor: 'inherit',
-      boxShadow: 'none'
-    },
-    '& .react-timekeeper__clock-wrapper': {
-      backgroundColor: 'inherit'
-    },
-    '& .react-timekeeper__top-bar': {
-      backgroundColor: 'inherit'
-    },
-    '& .react-timekeeper__time-dropdown': {
-      display: 'none'
-    },
     alignSelf: 'center',
     '@media (max-width:1200px)': {
       width: 'calc(100% - 60px)',
       height: 'calc(100% - 60px)'
     },
-    // Remove from the Name/Time form once extracted (leave only for 3rd page)
     overflowY: 'auto',
     '&::-webkit-scrollbar': {
       width: '0.6em'
@@ -121,10 +107,10 @@ const PubInfoList = (props) => {
 
         return (
           <PubInfo
-            key={`${index}-${pub.place_id}`}
+            key={`${index}-${pub.placeId}`}
             index={index}
             name={pub.name}
-            weekday_text={pub.weekday_text}
+            weekdayText={pub.weekdayText}
             warning={weekDayIndexesThatWontWork.length === 0 ? '' : warning}
             startTime={pubStartTime}
             endTime={pubEndTime}
@@ -140,17 +126,17 @@ PubInfoList.propTypes = forbidExtraProps({
   totalPubCrawlDistanceInMeters: PropTypes.number.isRequired,
   totalPubCrawlDurationInMinutes: PropTypes.number.isRequired,
   pubs: PropTypes.arrayOf(PropTypes.exact({
-    formatted_address: PropTypes.string.isRequired,
+    formattedAddress: PropTypes.string.isRequired,
     location: PropTypes.exact({
       lat: PropTypes.number.isRequired,
       lng: PropTypes.number.isRequired
     }).isRequired,
     name: PropTypes.string.isRequired,
-    weekday_text: PropTypes.oneOfType([
+    weekdayText: PropTypes.oneOfType([
       PropTypes.string.isRequired,
       PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     ]).isRequired,
-    place_id: PropTypes.string.isRequired,
+    placeId: PropTypes.string.isRequired,
     rating: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
     periods: PropTypes.arrayOf(

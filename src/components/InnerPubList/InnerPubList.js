@@ -22,15 +22,15 @@ const InnerPubList = (props) => {
 
   const pubElements = props.pubs.map((pub, index) => (
     <Pub
-      key={`${index}-${pub.place_id}`}
-      draggableId={`${index}-${pub.place_id}`}
+      key={`${index}-${pub.placeId}`}
+      draggableId={`${index}-${pub.placeId}`}
       index={index}
       icon={iconForIndex(index)}
-      formatted_address={pub.formatted_address}
+      formattedAddress={pub.formattedAddress}
       location={pub.location}
       name={pub.name}
-      weekday_text={pub.weekday_text}
-      place_id={pub.place_id}
+      weekdayText={pub.weekdayText}
+      placeId={pub.placeId}
       rating={pub.rating}
       duration={pub.duration}
       removePubButtonHandler={() => {
@@ -47,17 +47,17 @@ const InnerPubList = (props) => {
 
 InnerPubList.propTypes = forbidExtraProps({
   pubs: PropTypes.arrayOf(PropTypes.exact({
-    formatted_address: PropTypes.string.isRequired,
+    formattedAddress: PropTypes.string.isRequired,
     location: PropTypes.exact({
       lat: PropTypes.number.isRequired,
       lng: PropTypes.number.isRequired
     }).isRequired,
     name: PropTypes.string.isRequired,
-    weekday_text: PropTypes.oneOfType([
+    weekdayText: PropTypes.oneOfType([
       PropTypes.string.isRequired,
       PropTypes.arrayOf(PropTypes.string).isRequired
     ]).isRequired,
-    place_id: PropTypes.string.isRequired,
+    placeId: PropTypes.string.isRequired,
     rating: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
     periods: PropTypes.arrayOf(

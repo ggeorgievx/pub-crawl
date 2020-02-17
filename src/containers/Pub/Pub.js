@@ -159,7 +159,7 @@ const Pub = (props) => {
                       </CustomPopover>
                     </div>
                     <Typography variant="body2">
-                      {props.formatted_address}
+                      {props.formattedAddress}
                     </Typography>
                     <div className={classes.row}>
                       <div
@@ -186,14 +186,14 @@ const Pub = (props) => {
                         <Calendar className={classes.icon} />
                       </div>
                       <CustomPopover anchorEl={calendarAnchorEl}>
-                        {typeof props.weekday_text === 'string' ?
+                        {typeof props.weekdayText === 'string' ?
                           <Typography
                             variant="caption"
                             className={classes.text}
                           >
-                            {props.weekday_text}
+                            {props.weekdayText}
                           </Typography> :
-                          props.weekday_text.map((weekdayText, index) => (
+                          props.weekdayText.map((weekdayText, index) => (
                             <Typography
                               key={index}
                               variant="caption"
@@ -238,17 +238,17 @@ Pub.propTypes = forbidExtraProps({
   draggableId: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   icon: PropTypes.object.isRequired,
-  formatted_address: PropTypes.string.isRequired,
+  formattedAddress: PropTypes.string.isRequired,
   location: PropTypes.exact({
     lat: PropTypes.number.isRequired,
     lng: PropTypes.number.isRequired
   }).isRequired,
   name: PropTypes.string.isRequired,
-  weekday_text: PropTypes.oneOfType([
+  weekdayText: PropTypes.oneOfType([
     PropTypes.string.isRequired,
     PropTypes.arrayOf(PropTypes.string).isRequired
   ]).isRequired,
-  place_id: PropTypes.string.isRequired,
+  placeId: PropTypes.string.isRequired,
   rating: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
   removePubButtonHandler: PropTypes.func.isRequired,

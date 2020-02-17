@@ -95,14 +95,14 @@ const PubInfo = (props) => {
         />
       </div>
       <CustomPopover anchorEl={calendarAnchorEl}>
-        {typeof props.weekday_text === 'string' ?
+        {typeof props.weekdayText === 'string' ?
           <Typography
             variant="caption"
             className={classes.text}
           >
-            {props.weekday_text}
+            {props.weekdayText}
           </Typography> :
-          props.weekday_text.map((weekdayText, index) => (
+          props.weekdayText.map((weekdayText, index) => (
             <Typography
               key={index}
               variant="caption"
@@ -119,7 +119,7 @@ const PubInfo = (props) => {
 PubInfo.propTypes = forbidExtraProps({
   index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  weekday_text: PropTypes.oneOfType([
+  weekdayText: PropTypes.oneOfType([
     PropTypes.string.isRequired,
     PropTypes.arrayOf(PropTypes.string).isRequired
   ]).isRequired,

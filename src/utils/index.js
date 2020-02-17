@@ -225,11 +225,11 @@ export const normalizePlace = (place) => {
   normalizedPlace.location = normalizedPlace.geometry.location;
   delete normalizedPlace.geometry;
   if (normalizedPlace.opening_hours) {
-    normalizedPlace.weekday_text = normalizedPlace.opening_hours.weekday_text;
+    normalizedPlace.weekdayText = normalizedPlace.opening_hours.weekday_text;
     normalizedPlace.periods = normalizePeriods(normalizedPlace.opening_hours.periods);
     delete normalizedPlace.opening_hours;
   } else {
-    normalizedPlace.weekday_text = constants.TEXT_DEFAULT_WEEKDAY_TEXT;
+    normalizedPlace.weekdayText = constants.TEXT_DEFAULT_WEEKDAY_TEXT;
     normalizedPlace.periods = normalizePeriods([]);
   }
   delete normalizedPlace.icon;
@@ -237,6 +237,12 @@ export const normalizePlace = (place) => {
 
   normalizedPlace.rating = normalizedPlace.rating || constants.DEFAULT_RATING;
   normalizedPlace.duration = constants.DEFAULT_DURATION_IN_MINUTES;
+
+  normalizedPlace.formattedAddress = normalizedPlace.formatted_address;
+  delete normalizedPlace.formatted_address;
+
+  normalizedPlace.placeId = normalizedPlace.place_id;
+  delete normalizedPlace.place_id;
 
   return normalizedPlace;
 };

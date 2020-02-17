@@ -118,17 +118,17 @@ PubList.propTypes = forbidExtraProps({
   dragStartHandler: PropTypes.func.isRequired,
   dragEndHandler: PropTypes.func.isRequired,
   pubs: PropTypes.arrayOf(PropTypes.exact({
-    formatted_address: PropTypes.string.isRequired,
+    formattedAddress: PropTypes.string.isRequired,
     location: PropTypes.exact({
       lat: PropTypes.number.isRequired,
       lng: PropTypes.number.isRequired
     }).isRequired,
     name: PropTypes.string.isRequired,
-    weekday_text: PropTypes.oneOfType([
+    weekdayText: PropTypes.oneOfType([
       PropTypes.string.isRequired,
       PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
     ]).isRequired,
-    place_id: PropTypes.string.isRequired,
+    placeId: PropTypes.string.isRequired,
     rating: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
     periods: PropTypes.arrayOf(

@@ -5,45 +5,64 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-  home: {
-    backgroundImage: `url(${Background})`,
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    position: 'fixed',
-    width: '100%',
-    height: 'calc(100% - 112px);',
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column'
-  },
-  blur: {
-    backgroundColor: 'rgba(224, 224, 224, 0.5)',
-    backdropFilter: 'blur(2px)',
-    padding: '50px'
-  },
-  text: {
-    ...theme.typography.h2,
-    color: theme.palette.secondary.main,
-    letterSpacing: '10px',
-    // Prevent the user from selecting the text.
-    userSelect: 'none',
-    msUserSelect: 'none',
-    msTouchSelect: 'none',
-    WebkitUserSelect: 'none',
-    KhtmlUserSelect: 'none',
-    MozUserSelect: 'none',
-    cursor: 'default'
-  },
-  container: {
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  button: {
-    margin: '2em'
-  }
-}));
+const useStyles = makeStyles((theme) => {
+  return {
+    home: {
+      backgroundImage: `url(${Background})`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      position: 'fixed',
+      width: '100%',
+      height: 'calc(100% - 112px)',
+      textAlign: 'center',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      '@media (min-width:3000px)': {
+        height: 'calc(100% - 156px)'
+      }
+    },
+    blur: {
+      backgroundColor: 'rgba(224, 224, 224, .5)',
+      backdropFilter: 'blur(2px)',
+      padding: '50px'
+    },
+    text: {
+      ...theme.typography.h2,
+      color: theme.palette.secondary.main,
+      letterSpacing: '10px',
+      '@media (max-width:1200px)': {
+        ...theme.typography.h4,
+        letterSpacing: '4px',
+        fontWeight: 300
+      },
+      '@media (min-width:3000px)': {
+        ...theme.typography.h1,
+        letterSpacing: '8px',
+        fontWeight: 300
+      },
+      // Prevent the user from selecting the text.
+      userSelect: 'none',
+      msUserSelect: 'none',
+      msTouchSelect: 'none',
+      WebkitUserSelect: 'none',
+      KhtmlUserSelect: 'none',
+      MozUserSelect: 'none',
+      cursor: 'default'
+    },
+    container: {
+      display: 'flex',
+      justifyContent: 'center',
+      '@media (max-width:1200px)': {
+        flexDirection: 'column',
+        alignItems: 'center'
+      }
+    },
+    button: {
+      margin: '2em'
+    }
+  };
+});
 
 const Home = () => {
   const classes = useStyles();

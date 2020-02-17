@@ -233,7 +233,6 @@ CustomStepper.propTypes = forbidExtraProps({
       ).isRequired
     })).isRequired,
     directions: PropTypes.object,
-    dialogOpen: PropTypes.bool.isRequired,
     autocompleteOpen: PropTypes.bool.isRequired,
     zoom: PropTypes.number.isRequired,
     mapCenter: PropTypes.exact({

@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { convertAMPMTimeTo24HourTime } from '../../utils';
+import constants from '../../constants';
 
 const useStyles = makeStyles({
   paper: {
@@ -68,14 +69,13 @@ const PubCrawlDetails = (props) => {
     <Paper className={classes.paper}>
       <TextField
         className={classes.root}
-        label="Name"
+        label="Pub Crawl Name"
         variant="outlined"
         color="secondary"
         placeholder="2 < len < 19"
         value={props.pubCrawlName}
         size="medium"
         InputProps={{
-          autoFocus: true,
           classes: {
             root: classes.textColor,
             focused: classes.focused,
@@ -93,7 +93,7 @@ const PubCrawlDetails = (props) => {
       {matches ? (
         <TextField
           className={classes.root}
-          label="Start time"
+          label={constants.START_TIME_LABEL}
           type="time"
           variant="outlined"
           color="secondary"
@@ -119,7 +119,7 @@ const PubCrawlDetails = (props) => {
               className={classes.startTimeText}
               variant="h6"
             >
-              Start time:
+              {constants.START_TIME_LABEL}
             </Typography>
             <TimeKeeper
               time={props.pubCrawlStartTime}

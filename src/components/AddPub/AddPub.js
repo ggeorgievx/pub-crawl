@@ -11,6 +11,7 @@ const useStyles = makeStyles({
   button: {
     width: '480px',
     marginTop: '6px',
+    minHeight: '42px',
     '@media (max-width:1200px)': {
       width: '282px'
     }
@@ -21,6 +22,7 @@ const useStyles = makeStyles({
     borderWidth: '0px',
     fontSize: '15px',
     marginTop: '6px',
+    minHeight: '18px',
     '@media (max-width:1200px)': {
       width: '266px'
     }

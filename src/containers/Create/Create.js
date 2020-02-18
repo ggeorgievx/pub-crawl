@@ -38,7 +38,7 @@ const Create = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [pubCrawlStartTime, setPubCrawlStartTime] = useState('7:30 pm');
-  const [pubCrawlName, setPubCrawlName] = useState('');
+  const [pubCrawlName, setPubCrawlName] = useState(constants.DEFAULT_PUB_CRAWL_NAME);
   const directionsService = useRef(null);
   const legsDurations = useRef([]);
   const totalPubCrawlDistanceInMeters = useRef(0);

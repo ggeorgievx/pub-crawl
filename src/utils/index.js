@@ -238,7 +238,7 @@ export const normalizePlace = (place) => {
     normalizedPlace.periods = normalizePeriods(normalizedPlace.opening_hours.periods);
     delete normalizedPlace.opening_hours;
   } else {
-    normalizedPlace.weekdayText = constants.TEXT_DEFAULT_WEEKDAY_TEXT;
+    normalizedPlace.weekdayText = constants.DEFAULT_WEEKDAY_TEXT;
     normalizedPlace.periods = normalizePeriods([]);
   }
   delete normalizedPlace.icon;

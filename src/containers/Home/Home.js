@@ -127,7 +127,12 @@ const Home = () => {
           Design Your Journey
         </div>
         <div className={classes.container}>
-          <Tooltip title="WITHOUT HISTORY" placement="top">
+          <Tooltip
+            title="WITHOUT HISTORY"
+            placement="top"
+            enterTouchDelay="50"
+            leaveTouchDelay="300"
+          >
             <Button
               className={classes.button}
               variant="contained"
@@ -138,7 +143,12 @@ const Home = () => {
               CONTINUE AS GUEST
             </Button>
           </Tooltip>
-          <Tooltip title="WITH HISTORY" placement="top">
+          <Tooltip
+            title="WITH HISTORY"
+            placement="top"
+            enterTouchDelay="50"
+            leaveTouchDelay="300"
+          >
             <Button
               className={classes.button}
               variant="contained"

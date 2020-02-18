@@ -98,7 +98,7 @@ const PubList = (props) => {
           open={props.dialogOpen}
           classes={{ paper: classes.dialogPaper }}
         >
-          <DialogTitle>{constants.TEXT_DIALOG_TITLE}</DialogTitle>
+          <DialogTitle>{constants.DIALOG_TITLE}</DialogTitle>
           <DialogActions>
             <Button
               onClick={props.okayButtonHandler}

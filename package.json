@@ -1,6 +1,22 @@
 {
   "name": "pub-crawl",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "author": "Georgi Georgiev <https://github.com/ggeorgievx> (https://github.com/ggeorgievx)",
+  "contributors": [
+    "Georgi Georgiev <https://github.com/ggeorgievx> (https://github.com/ggeorgievx)"
+  ],
+  "bugs": "https://github.com/ggeorgievx/pub-crawl/issues",
+  "homepage": "https://www.pub-crawl.app",
+  "keywords": [
+    "react",
+    "google maps",
+    "material ui",
+    "firebase",
+    "pub",
+    "pub crawl"
+  ],
+  "description": "React project designed by and for people who like to go out for drinks",
+  "repository": "https://github.com/ggeorgievx/pub-crawl",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.1",

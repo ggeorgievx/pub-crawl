@@ -103,7 +103,7 @@ const PubInfoList = (props) => {
           props.pubCrawlStartTime
         );
 
-        const warning = `You won't make it on time for this pub if you crawl on ${weekDayIndexesThatWontWork.join(', ')} 😞`;
+        const warning = `You won't make it on time for this pub if you crawl on ${weekDayIndexesThatWontWork.join(', ')}. 😞`;
 
         return (
           <PubInfo

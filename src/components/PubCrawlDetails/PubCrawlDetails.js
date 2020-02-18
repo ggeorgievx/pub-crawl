@@ -120,7 +120,7 @@ const PubCrawlDetails = (props) => {
               variant="h6"
             >
               Start time:
-          </Typography>
+            </Typography>
             <TimeKeeper
               time={props.pubCrawlStartTime}
               onChange={props.startTimeChangeHandler}

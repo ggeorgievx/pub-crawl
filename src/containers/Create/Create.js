@@ -8,7 +8,8 @@ import PubList from '../../components/PubList/PubList';
 import PubCrawlDetails from '../../components/PubCrawlDetails/PubCrawlDetails';
 import {
   normalizePlace,
-  calculatePubCrawlDetails
+  calculatePubCrawlDetails,
+  convert24HourTimeToAMPMTime
 } from '../../utils';
 import PubInfoList from '../../components/PubInfoList/PubInfoList';
 import constants from '../../constants';
@@ -296,8 +297,16 @@ const Create = () => {
     setPubCrawlName(event.target.value);
   };
   const startTimeChangeHandler = (data) => {
+    let newStartTime;
+
+    if (typeof data.formatted24 !== 'undefined') {
+      newStartTime = convert24HourTimeToAMPMTime(data.formatted24);
+    } else {
+      newStartTime = convert24HourTimeToAMPMTime(data.target.value);
+    }
+
     setPubCrawlStartTime(() => {
-      return data.formatted12;
+      return newStartTime;
     });
   };
 

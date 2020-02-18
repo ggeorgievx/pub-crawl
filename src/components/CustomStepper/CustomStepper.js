@@ -29,7 +29,6 @@ const useStyles = makeStyles({
     height: 'calc(100% - 98px)',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-start',
     padding: '14px',
     backgroundColor: 'rgb(0, 0, 0)',
     '@media (max-width:1200px)': {
@@ -86,7 +85,8 @@ const useStyles = makeStyles({
     paddingRight: '20px',
     '@media (max-width:1200px)': {
       paddingRight: '0px',
-      paddingBottom: '5px'
+      paddingBottom: '5px',
+      maxHeight: 'calc(44% + 50px)'
     }
   },
   loadingContainer: {
@@ -95,7 +95,12 @@ const useStyles = makeStyles({
     paddingRight: '20px',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    '@media (max-width:1200px)': {
+      paddingRight: '0px',
+      paddingBottom: '5px',
+      maxHeight: 'calc(44% + 50px)'
+    }
   },
   map: {
     height: '100%',

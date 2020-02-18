@@ -6,6 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { convertAMPMTimeTo24HourTime } from '../../utils';
 
 const useStyles = makeStyles({
   paper: {
@@ -60,6 +62,7 @@ const useStyles = makeStyles({
 
 const PubCrawlDetails = (props) => {
   const classes = useStyles();
+  const matches = useMediaQuery('(max-width:1200px)');
 
   return (
     <Paper className={classes.paper}>
@@ -87,17 +90,45 @@ const PubCrawlDetails = (props) => {
           }
         }}
       />
-      <Typography
-        className={classes.startTimeText}
-        variant="h6"
-      >
-        Start time:
-      </Typography>
-      <TimeKeeper
-        time={props.pubCrawlStartTime}
-        onChange={props.startTimeChangeHandler}
-        switchToMinuteOnHourSelect
-      />
+      {matches ? (
+        <TextField
+          className={classes.root}
+          label="Start time"
+          type="time"
+          variant="outlined"
+          color="secondary"
+          value={convertAMPMTimeTo24HourTime(props.pubCrawlStartTime)}
+          InputProps={{
+            classes: {
+              root: classes.textColor,
+              focused: classes.focused,
+              notchedOutline: classes.notchedOutline
+            },
+            onChange: props.startTimeChangeHandler
+          }}
+          InputLabelProps={{
+            classes: {
+              root: classes.textColor,
+              focused: classes.focusedLabel
+            }
+          }}
+        />
+      ) : (
+          <>
+            <Typography
+              className={classes.startTimeText}
+              variant="h6"
+            >
+              Start time:
+          </Typography>
+            <TimeKeeper
+              time={props.pubCrawlStartTime}
+              onChange={props.startTimeChangeHandler}
+              switchToMinuteOnHourSelect
+            />
+          </>
+        )
+      }
     </Paper>
   );
 };

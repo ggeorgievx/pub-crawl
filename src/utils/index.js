@@ -19,22 +19,6 @@ const normalizeTFHTime = (TFHtime) => {
   return formatTime(hours % 24, minutes);
 };
 
-// '4:32 pm' => '16:32'
-const convertAMPMTimeTo24HourTime = (AMPMTime) => {
-  const [time, AMPM] = AMPMTime.split(' ');
-  const [hours, minutes] = parseHoursAndMinutes(time);
-  const isPM = AMPM === 'pm';
-  let newHours = hours;
-
-  if (isPM && newHours < 12) {
-    newHours = newHours + 12;
-  } else if (!isPM && newHours === 12) {
-    newHours = 0;
-  }
-
-  return formatTime(newHours, minutes);
-};
-
 // (50, '17:30') => '18:20'
 const addMinutesTo24HourTime = (minutesToAdd, TFHtime) => {
   const [hours, minutes] = parseHoursAndMinutes(TFHtime);
@@ -187,6 +171,31 @@ const checkIfTimeIsInInterval = (time, interval) => {
     (time <= interval[1]);
 
   return onTime;
+};
+
+// '4:32 pm' => '16:32'
+export const convertAMPMTimeTo24HourTime = (AMPMTime) => {
+  const [time, AMPM] = AMPMTime.split(' ');
+  const [hours, minutes] = parseHoursAndMinutes(time);
+  const isPM = AMPM === 'pm';
+  let newHours = hours;
+
+  if (isPM && newHours < 12) {
+    newHours = newHours + 12;
+  } else if (!isPM && newHours === 12) {
+    newHours = 0;
+  }
+
+  return formatTime(newHours, minutes);
+};
+
+// '16:32' => '4:32 pm'
+export const convert24HourTimeToAMPMTime = (TFHtime) => {
+  const [hours, minutes] = parseHoursAndMinutes(TFHtime);
+  const AMPM = hours < 12 ? 'am' : 'pm';
+  const newHours = hours % 12 || 12;
+
+  return `${newHours}:${minutes.toString().padStart(2, '0')} ${AMPM}`;
 };
 
 // (1, [ { duration: 45 }, { duration: 60} ], '17:30', [45]) =>

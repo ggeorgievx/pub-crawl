@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import Background from '../../assets/images/background.jpg';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -10,6 +10,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import AuthContext from '../../authContext';
 
 const useStyles = makeStyles((theme) => {
 
@@ -76,18 +77,19 @@ const useStyles = makeStyles((theme) => {
 const Home = () => {
   const classes = useStyles();
   const history = useHistory();
+  const authContext = useContext(AuthContext);
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [snackbarSuccessOpen, setSnackbarSuccessOpen] = useState(false);
   const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
 
   const redirect = (success) => {
-    setBackdropOpen(() => {
-      return false;
-    });
-
     setTimeout(() => {
       history.push('/create');
     }, 2000);
+
+    setBackdropOpen(() => {
+      return false;
+    });
 
     if (success) {
       setSnackbarSuccessOpen(true);
@@ -99,7 +101,7 @@ const Home = () => {
   const backdropClickHandler = () => {
     setBackdropOpen(false);
   };
-  const guestButtonHandler = () => {
+  const buttonHandler = () => {
     history.push('/create');
   };
   const googleButtonHandler = () => {
@@ -126,40 +128,52 @@ const Home = () => {
         <div className={classes.text}>
           Design Your Journey
         </div>
-        <div className={classes.container}>
-          <Tooltip
-            title="WITHOUT HISTORY"
-            placement="top"
-            enterTouchDelay="50"
-            leaveTouchDelay="300"
-          >
+        {authContext.currentUser === null ? (
+          <div className={classes.container}>
+            <Tooltip
+              title="WITHOUT HISTORY"
+              placement="top"
+              enterTouchDelay={50}
+              leaveTouchDelay={300}
+            >
+              <Button
+                className={classes.button}
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={buttonHandler}
+              >
+                CONTINUE AS GUEST
+            </Button>
+            </Tooltip>
+            <Tooltip
+              title="WITH HISTORY"
+              placement="top"
+              enterTouchDelay={50}
+              leaveTouchDelay={300}
+            >
+              <Button
+                className={classes.button}
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={googleButtonHandler}
+              >
+                LOGIN WITH GOOGLE
+            </Button>
+            </Tooltip>
+          </div>
+        ) : (
             <Button
               className={classes.button}
               variant="contained"
               color="primary"
               size="large"
-              onClick={guestButtonHandler}
+              onClick={buttonHandler}
             >
-              CONTINUE AS GUEST
+              CONTINUE
             </Button>
-          </Tooltip>
-          <Tooltip
-            title="WITH HISTORY"
-            placement="top"
-            enterTouchDelay="50"
-            leaveTouchDelay="300"
-          >
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={googleButtonHandler}
-            >
-              LOGIN WITH GOOGLE
-            </Button>
-          </Tooltip>
-        </div>
+          )}
       </div>
       <Backdrop
         className={classes.backdrop}
@@ -168,17 +182,25 @@ const Home = () => {
       >
         <CircularProgress color="secondary" />
       </Backdrop>
-      <Snackbar open={snackbarSuccessOpen} autoHideDuration={1500}>
+      <Snackbar
+        open={snackbarSuccessOpen}
+        autoHideDuration={1500}
+        onClose={() => setSnackbarSuccessOpen(false)}
+      >
         <MuiAlert elevation={6} variant="filled" severity="success">
-          Successfully logged in with Google. Continuing...
+          Successfully logged in with Google! Continuing...
         </MuiAlert>
       </Snackbar>
-      <Snackbar open={snackbarErrorOpen} autoHideDuration={1500}>
+      <Snackbar
+        open={snackbarErrorOpen}
+        autoHideDuration={1500}
+        onClose={() => setSnackbarErrorOpen(false)}
+      >
         <MuiAlert elevation={6} variant="filled" severity="error">
-          Failed to login with Google. Continuing as guest...
+          Failed to login with Google! Continuing as guest...
         </MuiAlert>
       </Snackbar>
-    </div>
+    </div >
   );
 };
 

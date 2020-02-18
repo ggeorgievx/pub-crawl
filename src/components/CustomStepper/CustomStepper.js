@@ -194,7 +194,7 @@ const CustomStepper = (props) => {
           variant="contained"
           disabled={!props.valid}
           color="primary"
-          onClick={props.nextButtonHandler}
+          onClick={props.nextSaveButtonHandler}
           size="large"
         >
           {(props.activeStep === props.numberOfSteps - 1) ? 'Save' : 'Next'}
@@ -208,7 +208,7 @@ CustomStepper.propTypes = forbidExtraProps({
   activeStep: PropTypes.number.isRequired,
   numberOfSteps: PropTypes.number.isRequired,
   icons: PropTypes.objectOf(PropTypes.element.isRequired).isRequired,
-  nextButtonHandler: PropTypes.func.isRequired,
+  nextSaveButtonHandler: PropTypes.func.isRequired,
   backButtonHandler: PropTypes.func.isRequired,
   children: PropTypes.arrayOf(PropTypes.element.isRequired).isRequired,
   valid: PropTypes.bool.isRequired,

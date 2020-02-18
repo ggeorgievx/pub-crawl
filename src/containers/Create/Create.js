@@ -1,4 +1,10 @@
-import React, { useState, useReducer, useRef, useMemo } from 'react';
+import React, {
+  useState,
+  useReducer,
+  useRef,
+  useMemo,
+  useContext
+} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import RoomIcon from '@material-ui/icons/Room';
 import EventNoteIcon from '@material-ui/icons/EventNote';
@@ -9,10 +15,18 @@ import PubCrawlDetails from '../../components/PubCrawlDetails/PubCrawlDetails';
 import {
   normalizePlace,
   calculatePubCrawlDetails,
-  convert24HourTimeToAMPMTime
+  convert24HourTimeToAMPMTime,
+  calculateStartAndEndTimeForPubAtIndex
 } from '../../utils';
 import PubInfoList from '../../components/PubInfoList/PubInfoList';
 import constants from '../../constants';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import AuthContext from '../../authContext';
+import axiosPubCrawlsInstance from '../../axiosPubCrawls';
+import { useHistory } from 'react-router-dom';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles({
   create: {
@@ -31,11 +45,15 @@ const useStyles = makeStyles({
   },
   enablePointerEvents: {
     pointerEvents: 'auto'
+  },
+  backdrop: {
+    zIndex: 1
   }
 });
 
 const Create = () => {
   const classes = useStyles();
+  const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
   const [pubCrawlStartTime, setPubCrawlStartTime] = useState('7:30 pm');
   const [pubCrawlName, setPubCrawlName] = useState(constants.DEFAULT_PUB_CRAWL_NAME);
@@ -43,6 +61,11 @@ const Create = () => {
   const legsDurations = useRef([]);
   const totalPubCrawlDistanceInMeters = useRef(0);
   const totalPubCrawlDurationInMinutes = useRef(0);
+  const authContext = useContext(AuthContext);
+  const [backdropOpen, setBackdropOpen] = useState(false);
+  const [snackbarSuccessOpen, setSnackbarSuccessOpen] = useState(false);
+  const [snackbarWarningOpen, setSnackbarWarningOpen] = useState(false);
+  const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
 
   const numberOfSteps = 3;
   const icons = {
@@ -131,13 +154,75 @@ const Create = () => {
       return prevActiveStep - 1;
     });
   };
-  const nextButtonHandler = () => {
+
+  const nextSaveButtonHandler = () => {
     if (activeStep < numberOfSteps - 1) {
       setActiveStep((prevActiveStep) => {
         return prevActiveStep + 1;
       });
     } else if (activeStep === numberOfSteps - 1) {
-      console.log('Saving Pub Crawl...');
+      const pubs = pubCrawlInfo.pubs.map((pub, index) => {
+        const [startTime, endTime] = calculateStartAndEndTimeForPubAtIndex(
+          index,
+          pubCrawlInfo.pubs,
+          pubCrawlStartTime,
+          legsDurations.current
+        );
+
+        return {
+          name: pub.name,
+          location: pub.location,
+          address: pub.formattedAddress,
+          weekdayText: pub.weekdayText,
+          rating: pub.rating,
+          index: index,
+          startTime: startTime,
+          endTime: endTime
+        };
+      });
+
+      const pubCrawl = {
+        name: pubCrawlName,
+        startTime: pubCrawlStartTime,
+        legsDurations: legsDurations.current,
+        totalDistanceInMeters: totalPubCrawlDistanceInMeters.current,
+        totalDurationInMinutes: totalPubCrawlDurationInMinutes.current,
+        directions: pubCrawlInfo.directions,
+        pubs: pubs
+      };
+
+      if (authContext.currentUser !== null) {
+        setBackdropOpen(() => {
+          return true;
+        });
+
+        authContext.currentUser.getIdToken(true)
+          .then((idToken) => {
+            return axiosPubCrawlsInstance.post(`/${authContext.currentUser.uid}.json?auth=${idToken}`, pubCrawl);
+          })
+          .then(() => {
+            setTimeout(() => {
+              history.push('/pub-crawls');
+            }, 2000);
+
+            setBackdropOpen(() => {
+              return false;
+            });
+
+            setSnackbarSuccessOpen(true);
+          })
+          .catch(() => {
+            setSnackbarErrorOpen(true);
+          });
+      } else {
+        setTimeout(() => {
+          history.push('/pub-crawls');
+        }, 3000);
+
+        setSnackbarWarningOpen(true);
+
+        window.localStorage.setItem(+new Date(), JSON.stringify(pubCrawl));
+      }
     }
   };
   const okayButtonHandler = () => {
@@ -309,6 +394,9 @@ const Create = () => {
       return newStartTime;
     });
   };
+  const backdropClickHandler = () => {
+    setBackdropOpen(false);
+  };
 
   // Calculate legsDurations, totalPubCrawlDistanceInMeters and
   // totalPubCrawlDurationInMinutes when a new pub is added, a pub is removed or
@@ -340,7 +428,7 @@ const Create = () => {
     <div className={classes.create}>
       <CustomStepper
         activeStep={activeStep}
-        nextButtonHandler={nextButtonHandler}
+        nextSaveButtonHandler={nextSaveButtonHandler}
         backButtonHandler={backButtonHandler}
         numberOfSteps={numberOfSteps}
         icons={icons}
@@ -375,6 +463,40 @@ const Create = () => {
           legsDurations={legsDurations.current}
         />
       </CustomStepper>
+      <Backdrop
+        className={classes.backdrop}
+        open={backdropOpen}
+        onClick={backdropClickHandler}
+      >
+        <CircularProgress color="secondary" />
+      </Backdrop>
+      <Snackbar
+        open={snackbarSuccessOpen}
+        autoHideDuration={1500}
+        onClose={() => setSnackbarSuccessOpen(false)}
+      >
+        <MuiAlert elevation={6} variant="filled" severity="success">
+          Successfully saved Pub Crawl! Continuing...
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={snackbarWarningOpen}
+        autoHideDuration={2500}
+        onClose={() => setSnackbarWarningOpen(false)}
+      >
+        <MuiAlert elevation={6} variant="filled" severity="warning">
+          Saved Pub Crawl! Consider logging in if you want your data to be persisted. Continuing...
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={snackbarErrorOpen}
+        autoHideDuration={1500}
+        onClose={() => setSnackbarErrorOpen(false)}
+      >
+        <MuiAlert elevation={6} variant="filled" severity="error">
+          Failed to save Pub Crawl!
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 };

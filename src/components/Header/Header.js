@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 
 const Header = () => {
   const classes = useStyles();
-  const auth = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
 
   return (
     <header className={classes.header}>
@@ -52,8 +52,8 @@ const Header = () => {
         <img src={Logo} alt="Pub Crawl Logo" className={classes.icon} />
       </Link>
       <Avatar
-        alt={auth.currentUser !== null ? auth.currentUser.displayName : 'Guest'}
-        src={auth.currentUser !== null ? auth.currentUser.photoURL : ''}
+        alt={authContext.currentUser !== null ? authContext.currentUser.displayName : 'Guest'}
+        src={authContext.currentUser !== null ? authContext.currentUser.photoURL : ''}
         className={classes.picture}
       />
       )}

@@ -12,15 +12,8 @@ const parseHoursAndMinutes = (timeString) => {
   });
 };
 
-// '26:15' => '22:15'
-const normalizeTFHTime = (TFHtime) => {
-  const [hours, minutes] = parseHoursAndMinutes(TFHtime);
-
-  return formatTime(hours % 24, minutes);
-};
-
 // (50, '17:30') => '18:20'
-const addMinutesTo24HourTime = (minutesToAdd, TFHtime) => {
+export const addMinutesTo24HourTime = (minutesToAdd, TFHtime) => {
   const [hours, minutes] = parseHoursAndMinutes(TFHtime);
 
   const totalMinutes = minutes + minutesToAdd;
@@ -173,6 +166,20 @@ const checkIfTimeIsInInterval = (time, interval) => {
   return onTime;
 };
 
+// '26:15' => '22:15'
+export const normalizeTFHTime = (TFHtime) => {
+  const [hours, minutes] = parseHoursAndMinutes(TFHtime);
+
+  return formatTime(hours % 24, minutes);
+};
+
+// 4321 => '4.3 km'
+export const convertMetersToKm = (meters) => {
+  const kms = (meters / 1000);
+
+  return `${kms === 0 ? 0 : kms.toFixed(1)} km`;
+};
+
 // '4:32 pm' => '16:32'
 export const convertAMPMTimeTo24HourTime = (AMPMTime) => {
   const [time, AMPM] = AMPMTime.split(' ');
@@ -229,6 +236,14 @@ export const calculateStartAndEndTimeForPubAtIndex = (
 };
 
 export const normalizePlace = (place) => {
+  // Google have overwritten the place's toString method and log the following
+  // error whenever it is called:
+  // open_now is deprecated as of November 2019 and will be turned off in
+  // November 2020. Use the isOpen() function from a PlacesService.getDetails()
+  // result instead.
+  if (place.opening_hours) {
+    delete place.opening_hours.open_now;
+  }
   const normalizedPlace = JSON.parse(JSON.stringify(place));
 
   normalizedPlace.location = normalizedPlace.geometry.location;

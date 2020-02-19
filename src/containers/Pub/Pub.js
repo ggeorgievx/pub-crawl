@@ -28,6 +28,9 @@ const useStyles = makeStyles({
     KhtmlUserSelect: 'none',
     MozUserSelect: 'none',
     cursor: 'default',
+    '&:hover': {
+      borderColor: 'rgb(244,143,177)'
+    },
     '&:hover $removeIcon': {
       display: 'block'
     },

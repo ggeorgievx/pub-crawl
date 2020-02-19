@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import AuthContext from '../../authContext';
+import axiosPubCrawlsInstance from '../../axiosPubCrawls';
 
 const useStyles = makeStyles((theme) => {
 
@@ -82,27 +83,56 @@ const Home = () => {
   const [snackbarSuccessOpen, setSnackbarSuccessOpen] = useState(false);
   const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
 
-  const redirect = (success) => {
+  const checkIfCurrentUserHasPubCrawls = (newUser) => {
+    const currentUser = newUser || authContext.currentUser;
+
+    return new Promise((resolve) => {
+      if (currentUser !== null) {
+        axiosPubCrawlsInstance('.json')
+          .then((response) => {
+            resolve(Object.keys(response.data[currentUser.uid]).length > 0);
+          })
+          .catch(() => {
+            resolve(false);
+          });
+      } else {
+        resolve(localStorage.length > 0);
+      }
+    });
+  };
+  const getRedirectLocation = async (newUser) => {
+    const userHasPubCrawls = await checkIfCurrentUserHasPubCrawls(newUser);
+
+    if (userHasPubCrawls) {
+      return '/pub-crawls';
+    } else {
+      return '/create';
+    }
+  };
+  const redirect = async (newUser) => {
+    const redirectLocation = await getRedirectLocation(newUser);
+
     setTimeout(() => {
-      history.push('/create');
+      history.push(redirectLocation);
     }, 2000);
 
     setBackdropOpen(() => {
       return false;
     });
 
-    if (success) {
+    if (typeof newUser !== 'undefined') {
       setSnackbarSuccessOpen(true);
     } else {
       setSnackbarErrorOpen(true);
     }
   };
-
   const backdropClickHandler = () => {
     setBackdropOpen(false);
   };
-  const buttonHandler = () => {
-    history.push('/create');
+  const buttonHandler = async () => {
+    const redirectLocation = await getRedirectLocation();
+
+    history.push(redirectLocation);
   };
   const googleButtonHandler = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
@@ -114,11 +144,11 @@ const Home = () => {
     firebase
       .auth()
       .signInWithPopup(googleAuthProvider)
-      .then(() => {
-        redirect(true);
+      .then((newUserCredential) => {
+        redirect(newUserCredential.user);
       })
       .catch(() => {
-        redirect(false);
+        redirect();
       });
   };
 

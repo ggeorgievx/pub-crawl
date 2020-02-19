@@ -27,6 +27,7 @@ import axiosPubCrawlsInstance from '../../axiosPubCrawls';
 import { useHistory } from 'react-router-dom';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import CustomSpeedDial from '../../components/CustomSpeedDial/CustomSpeedDial';
 
 const useStyles = makeStyles({
   create: {
@@ -66,6 +67,7 @@ const Create = () => {
   const [snackbarSuccessOpen, setSnackbarSuccessOpen] = useState(false);
   const [snackbarWarningOpen, setSnackbarWarningOpen] = useState(false);
   const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
+  const [speedDialOpen, setSpeedDialOpen] = useState(false);
 
   const numberOfSteps = 3;
   const icons = {
@@ -394,6 +396,15 @@ const Create = () => {
       return newStartTime;
     });
   };
+  const speedDialOpenHandler = () => {
+    setSpeedDialOpen(true);
+  };
+  const speedDialCloseHandler = () => {
+    setSpeedDialOpen(false);
+  };
+  const applyAlgo = (algo) => {
+    console.log('debug: algo', algo);
+  };
 
   // Calculate legsDurations, totalPubCrawlDistanceInMeters and
   // totalPubCrawlDurationInMinutes when a new pub is added, a pub is removed or
@@ -432,19 +443,27 @@ const Create = () => {
         valid={valid}
         pubCrawlInfo={pubCrawlInfo}
       >
-        <PubList
-          pubs={pubCrawlInfo.pubs}
-          dragStartHandler={dragStartHandler}
-          dragEndHandler={dragEndHandler}
-          addPubButtonHandler={addPubButtonHandler}
-          autocompleteOpen={pubCrawlInfo.autocompleteOpen}
-          placeSelectedHandler={placeSelectedHandler}
-          autocompleteKeyDownHandler={autocompleteKeyDownHandler}
-          removePubButtonHandler={removePubButtonHandler}
-          sliderChangeHandler={sliderChangeHandler}
-          dialogOpen={pubCrawlInfo.dialogOpen}
-          okayButtonHandler={okayButtonHandler}
-        />
+        <>
+          <PubList
+            pubs={pubCrawlInfo.pubs}
+            dragStartHandler={dragStartHandler}
+            dragEndHandler={dragEndHandler}
+            addPubButtonHandler={addPubButtonHandler}
+            autocompleteOpen={pubCrawlInfo.autocompleteOpen}
+            placeSelectedHandler={placeSelectedHandler}
+            autocompleteKeyDownHandler={autocompleteKeyDownHandler}
+            removePubButtonHandler={removePubButtonHandler}
+            sliderChangeHandler={sliderChangeHandler}
+            dialogOpen={pubCrawlInfo.dialogOpen}
+            okayButtonHandler={okayButtonHandler}
+          />
+          <CustomSpeedDial
+            speedDialOpen={speedDialOpen}
+            speedDialOpenHandler={speedDialOpenHandler}
+            speedDialCloseHandler={speedDialCloseHandler}
+            applyAlgo={applyAlgo}
+          />
+        </>
         <PubCrawlDetails
           pubCrawlName={pubCrawlName}
           pubCrawlStartTime={pubCrawlStartTime}

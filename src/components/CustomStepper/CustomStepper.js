@@ -34,6 +34,7 @@ const useStyles = makeStyles({
     '@media (max-width:1200px)': {
       height: 'calc(100% - 76px)',
       alignItems: 'center',
+      justifyContent: 'flex-start',
       flexDirection: 'column'
     }
   },

@@ -35,7 +35,15 @@ const useStyles = makeStyles({
       width: 'calc(100% - 60px)',
       height: 'calc(100% - 60px)'
     },
-    color: 'rgb(255, 255, 255)'
+    color: 'rgb(255, 255, 255)',
+    // Prevent the user from selecting the text.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
   },
   // https://stackoverflow.com/questions/52911169/how-to-change-the-border-color-of-material-ui-textfield
   root: {

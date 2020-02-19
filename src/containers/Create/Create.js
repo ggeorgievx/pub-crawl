@@ -394,9 +394,6 @@ const Create = () => {
       return newStartTime;
     });
   };
-  const backdropClickHandler = () => {
-    setBackdropOpen(false);
-  };
 
   // Calculate legsDurations, totalPubCrawlDistanceInMeters and
   // totalPubCrawlDurationInMinutes when a new pub is added, a pub is removed or
@@ -466,7 +463,6 @@ const Create = () => {
       <Backdrop
         className={classes.backdrop}
         open={backdropOpen}
-        onClick={backdropClickHandler}
       >
         <CircularProgress color="secondary" />
       </Backdrop>

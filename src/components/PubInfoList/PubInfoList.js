@@ -31,7 +31,15 @@ const useStyles = makeStyles({
       backgroundColor: 'rgba(0, 0, 0, .3)',
       borderRadius: '20px'
     },
-    color: 'rgb(255, 255, 255)'
+    color: 'rgb(255, 255, 255)',
+    // Prevent the user from selecting the text.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
   },
   row: {
     display: 'flex',

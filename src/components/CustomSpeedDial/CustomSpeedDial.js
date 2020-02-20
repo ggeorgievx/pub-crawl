@@ -95,7 +95,8 @@ const CustomSpeedDial = (props) => {
       {actions.map((action) => (
         <SpeedDialAction
           classes={{
-            fab: `${classes.innerFab} ${props.enabled ? classes.enabled : classes.disabled}`
+            fab: `${classes.innerFab} ${action.name === constants.ALGO_SHORTEST ? props.shortestEnabled ? classes.enabled : classes.disabled :
+              props.enabled ? classes.enabled : classes.disabled}`
           }}
           key={action.name}
           icon={action.icon}
@@ -108,7 +109,8 @@ const CustomSpeedDial = (props) => {
             tooltip: classes.tooltip
           }}
           FabProps={{
-            disabled: !(props.enabled)
+            disabled: action.name === constants.ALGO_SHORTEST ?
+              !props.shortestEnabled : !props.enabled
           }}
         />
       ))}
@@ -121,7 +123,8 @@ CustomSpeedDial.propTypes = forbidExtraProps({
   speedDialOpenHandler: PropTypes.func.isRequired,
   speedDialCloseHandler: PropTypes.func.isRequired,
   runAlgo: PropTypes.func.isRequired,
-  enabled: PropTypes.bool.isRequired
+  enabled: PropTypes.bool.isRequired,
+  shortestEnabled: PropTypes.bool.isRequired
 });
 
 export default CustomSpeedDial;

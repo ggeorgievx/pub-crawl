@@ -584,6 +584,8 @@ const Create = () => {
             speedDialCloseHandler={speedDialCloseHandler}
             runAlgo={runAlgo}
             enabled={pubCrawlInfo.directions !== null}
+            shortestEnabled={pubCrawlInfo.directions !== null &&
+              pubCrawlInfo.pubs.length < 10}
           />
         </>
         <PubCrawlDetails

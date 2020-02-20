@@ -72,7 +72,8 @@ const useStyles = makeStyles({
   },
   text: {
     paddingTop: '20px',
-    paddingBottom: '20px'
+    paddingBottom: '20px',
+    textAlign: 'center'
   }
 });
 
@@ -271,7 +272,12 @@ const Create = () => {
             // Update message on last iteration.
             if (i === pubCrawlInfo.pubs.length - 2 &&
               j === pubCrawlInfo.pubs.length - 1) {
-              setBackdropMessage('Done fetching. Generating path...');
+              const messageSecondLine = algoToRun === constants.ALGO_SHORTEST ?
+                'Finding the shortest path overall... 🛩' :
+                algoToRun === constants.ALGO_GREEDY ?
+                  'Finding the path that always visits the closest pub starting with the first one 🤑' : '';
+
+              setBackdropMessage(`Done fetching. Generating path...<br />${messageSecondLine}`);
             }
 
             // Allow for a rerender.
@@ -280,7 +286,8 @@ const Create = () => {
         }
       }
 
-      await waitFor(3000);
+      const waitForDuration = pubCrawlInfo.pubs.length > 3 ? 5000 : 2000;
+      await waitFor(waitForDuration);
 
       const prevPubs = [
         ...pubCrawlInfo.pubs
@@ -612,7 +619,12 @@ const Create = () => {
         )}
         {(algoToRun && backdropMessage) && (
           <Typography className={classes.text}>
-            {backdropMessage}
+            {backdropMessage.split('<br />').map((messageRow) => (
+              <>
+                {messageRow}
+                < br />
+              </>
+            ))}
           </Typography>
         )}
         <CircularProgress color="secondary" />

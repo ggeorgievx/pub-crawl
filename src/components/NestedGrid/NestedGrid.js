@@ -66,7 +66,7 @@ const NestedGrid = (props) => {
           key={index}
           container
           item
-          xs={5}
+          xs={6}
           spacing={1}
         >
           <FormRow index={index} data={props.data} />

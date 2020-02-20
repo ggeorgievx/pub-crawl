@@ -3,7 +3,9 @@ import React, {
   useReducer,
   useRef,
   useMemo,
-  useContext
+  useContext,
+  useEffect,
+  useCallback
 } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import RoomIcon from '@material-ui/icons/Room';
@@ -28,6 +30,9 @@ import { useHistory } from 'react-router-dom';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomSpeedDial from '../../components/CustomSpeedDial/CustomSpeedDial';
+import algoRunner from '../../algorithms';
+import NestedGrid from '../../components/NestedGrid/NestedGrid';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
   create: {
@@ -48,7 +53,25 @@ const useStyles = makeStyles({
     pointerEvents: 'auto'
   },
   backdrop: {
-    zIndex: 1
+    color: 'rgb(255, 255, 255)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '20px',
+    zIndex: 99999,
+    // Prevent the user from selecting the text.
+    userSelect: 'none',
+    msUserSelect: 'none',
+    msTouchSelect: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    cursor: 'default'
+  },
+  text: {
+    paddingTop: '20px',
+    paddingBottom: '20px'
   }
 });
 
@@ -68,6 +91,9 @@ const Create = () => {
   const [snackbarWarningOpen, setSnackbarWarningOpen] = useState(false);
   const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
   const [speedDialOpen, setSpeedDialOpen] = useState(false);
+  const [backdropData, setBackdropData] = useState([[]]);
+  const [backdropMessage, setBackdropMessage] = useState('');
+  const [algoToRun, setAlgoToRun] = useState('');
 
   const numberOfSteps = 3;
   const icons = {
@@ -135,7 +161,7 @@ const Create = () => {
     }
   );
 
-  const sendDirectionsResultRequest = (
+  const sendDirectionsResultRequest = async (
     directionsOptions,
     directionsCallback
   ) => {
@@ -148,15 +174,168 @@ const Create = () => {
       ...directionsOptions
     };
 
-    directionsService.current.route(directionsRequest, directionsCallback);
+    const response = await new Promise((resolve) => {
+      const wrappedDirectionsCallback = (directionsResult, directionsStatus) => {
+
+        if (typeof directionsCallback !== 'undefined') {
+          directionsCallback(directionsResult, directionsStatus);
+        }
+
+        resolve({
+          result: directionsResult,
+          status: directionsStatus
+        });
+      };
+      directionsService.current.route(directionsRequest, wrappedDirectionsCallback);
+    });
+
+    return response;
+  };
+  const setPubs = useCallback((newPubs) => {
+    if (newPubs.length > 1) {
+      const waypoints = newPubs.map((pub) => ({
+        location: pub.location,
+        stopover: true
+      }));
+      const originWaypoint = waypoints.shift().location;
+      const destinationWaypoint = waypoints.pop().location;
+
+      const directionsOptions = {
+        origin: originWaypoint,
+        destination: destinationWaypoint,
+        waypoints: waypoints
+      };
+
+      const directionsCallback = (directionsResult, directionsStatus) => {
+        dispatchPubCrawlInfoUpdate({
+          type: 'setPubs',
+          newPubs: newPubs,
+          newDirections: directionsStatus === window.google.maps.DirectionsStatus.OK ? directionsResult : null
+        });
+      };
+
+      sendDirectionsResultRequest(directionsOptions, directionsCallback);
+    } else {
+      dispatchPubCrawlInfoUpdate({
+        type: 'setPubs',
+        newPubs: newPubs,
+        newDirections: null
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const waitFor = (ms) => {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    };
+
+    const runAsyncAlgo = async () => {
+      for (let i = 0; i < pubCrawlInfo.pubs.length; i++) {
+        for (let j = i + 1; j < pubCrawlInfo.pubs.length; j++) {
+          if (backdropData[i][j] === 'NaN') {
+            // Update message on first iteration.
+            if (i === 0 && j === 1) {
+              setBackdropMessage('Fetching the shortest distances between the pubs from Google...');
+            }
+
+            const directionsOptions = {
+              origin: pubCrawlInfo.pubs[i].location,
+              destination: pubCrawlInfo.pubs[j].location
+            };
+
+            let response = await sendDirectionsResultRequest(directionsOptions);
+
+            // https://developers.google.com/maps/premium/previous-licenses/articles/usage-limits
+            while (response.status === window.google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+              await waitFor(2000);
+              response = await sendDirectionsResultRequest(directionsOptions);
+            }
+
+            setBackdropData((prevBackDropData) => {
+              const newBackdropData = [
+                ...prevBackDropData
+              ];
+
+              const distance = response.result.routes[0].legs[0].distance.value;
+
+              newBackdropData[i][j] = distance;
+              newBackdropData[j][i] = distance;
+
+              return newBackdropData;
+            });
+
+            // Update message on last iteration.
+            if (i === pubCrawlInfo.pubs.length - 2 &&
+              j === pubCrawlInfo.pubs.length - 1) {
+              setBackdropMessage('Done fetching. Generating path...');
+            }
+
+            // Allow for a rerender.
+            return;
+          }
+        }
+      }
+
+      await waitFor(3000);
+
+      const prevPubs = [
+        ...pubCrawlInfo.pubs
+      ];
+      const newPubs = algoRunner(algoToRun, prevPubs, backdropData);
+
+      setPubs(newPubs);
+      setAlgoToRun('');
+      setBackdropMessage('');
+      setBackdropOpen(false);
+    };
+
+    if (algoToRun) {
+      if (constants.DISTANCE_DEPENDANT_ALGOS.includes(algoToRun)) {
+        runAsyncAlgo();
+      } else {
+        const prevPubs = [
+          ...pubCrawlInfo.pubs
+        ];
+
+        const newPubs = algoRunner(algoToRun, prevPubs, backdropData);
+
+        setPubs(newPubs);
+        setAlgoToRun('');
+        setBackdropOpen(false);
+      }
+    }
+  }, [backdropData, algoToRun, pubCrawlInfo.pubs, setPubs]);
+
+  const runAlgo = async (algo) => {
+    if (constants.DISTANCE_DEPENDANT_ALGOS.includes(algo) &&
+      pubCrawlInfo.directions !== null) {
+
+      setBackdropData(() => {
+        return Array.from({ length: pubCrawlInfo.pubs.length }).map((_, i) => {
+          return Array.from({ length: pubCrawlInfo.pubs.length }).map((__, j) => {
+            return i === j ? 0 : 'NaN';
+          });
+        });
+      });
+    }
+
+    setBackdropOpen(true);
+    setAlgoToRun(algo);
   };
 
+  const speedDialOpenHandler = () => {
+    setSpeedDialOpen(true);
+  };
+  const speedDialCloseHandler = () => {
+    setSpeedDialOpen(false);
+  };
   const backButtonHandler = () => {
     setActiveStep((prevActiveStep) => {
       return prevActiveStep - 1;
     });
   };
-
   const nextSaveButtonHandler = () => {
     if (activeStep < numberOfSteps - 1) {
       setActiveStep((prevActiveStep) => {
@@ -258,28 +437,7 @@ const Create = () => {
     const [deletedPub] = newPubs.splice(sourceIndex, 1);
     newPubs.splice(destinationIndex, 0, deletedPub);
 
-    const waypoints = [...newPubs].map((pub) => ({
-      location: pub.location,
-      stopover: true
-    }));
-    const originWaypoint = waypoints.shift().location;
-    const destinationWaypoint = waypoints.pop().location;
-
-    const directionsOptions = {
-      origin: originWaypoint,
-      destination: destinationWaypoint,
-      waypoints: waypoints
-    };
-
-    const directionsCallback = (directionsResult, directionsStatus) => {
-      dispatchPubCrawlInfoUpdate({
-        type: 'setPubs',
-        newPubs: newPubs,
-        newDirections: directionsStatus === window.google.maps.DirectionsStatus.OK ? directionsResult : null
-      });
-    };
-
-    sendDirectionsResultRequest(directionsOptions, directionsCallback);
+    setPubs(newPubs);
   };
   const addPubButtonHandler = () => {
     dispatchPubCrawlInfoUpdate({ type: 'setAutocompleteOpenTrue' });
@@ -291,36 +449,7 @@ const Create = () => {
 
     newPubs.splice(index, 1);
 
-    if (newPubs.length > 1) {
-      const waypoints = [...newPubs].map((pub) => ({
-        location: pub.location,
-        stopover: true
-      }));
-      const originWaypoint = waypoints.shift().location;
-      const destinationWaypoint = waypoints.pop().location;
-
-      const directionsOptions = {
-        origin: originWaypoint,
-        destination: destinationWaypoint,
-        waypoints: waypoints
-      };
-
-      const directionsCallback = (directionsResult, directionsStatus) => {
-        dispatchPubCrawlInfoUpdate({
-          type: 'setPubs',
-          newPubs: newPubs,
-          newDirections: directionsStatus === window.google.maps.DirectionsStatus.OK ? directionsResult : null
-        });
-      };
-
-      sendDirectionsResultRequest(directionsOptions, directionsCallback);
-    } else {
-      dispatchPubCrawlInfoUpdate({
-        type: 'setPubs',
-        newPubs: newPubs,
-        newDirections: null
-      });
-    }
+    setPubs(newPubs);
   };
   const sliderChangeHandler = (index, value) => {
     const newPubs = [
@@ -396,15 +525,6 @@ const Create = () => {
       return newStartTime;
     });
   };
-  const speedDialOpenHandler = () => {
-    setSpeedDialOpen(true);
-  };
-  const speedDialCloseHandler = () => {
-    setSpeedDialOpen(false);
-  };
-  const applyAlgo = (algo) => {
-    console.log('debug: algo', algo);
-  };
 
   // Calculate legsDurations, totalPubCrawlDistanceInMeters and
   // totalPubCrawlDurationInMinutes when a new pub is added, a pub is removed or
@@ -461,7 +581,8 @@ const Create = () => {
             speedDialOpen={speedDialOpen}
             speedDialOpenHandler={speedDialOpenHandler}
             speedDialCloseHandler={speedDialCloseHandler}
-            applyAlgo={applyAlgo}
+            runAlgo={runAlgo}
+            pubsLength={pubCrawlInfo.pubs.length}
           />
         </>
         <PubCrawlDetails
@@ -483,6 +604,14 @@ const Create = () => {
         className={classes.backdrop}
         open={backdropOpen}
       >
+        {(algoToRun && backdropMessage) && (
+          <>
+            <NestedGrid data={backdropData} />
+            <Typography className={classes.text}>
+              {backdropMessage}
+            </Typography>
+          </>
+        )}
         <CircularProgress color="secondary" />
       </Backdrop>
       <Snackbar

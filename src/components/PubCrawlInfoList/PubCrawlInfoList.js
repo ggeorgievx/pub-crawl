@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { forbidExtraProps } from 'airbnb-prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import PubCrawlInfo from '../../containers/PubCrawlInfo/PubCrawlInfo';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
   list: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 
 const PubCrawlInfoList = (props) => {
   const classes = useStyles();
-  const history = useHistory();
+  // const history = useHistory();
 
   return (
     <div className={classes.list}>
@@ -39,10 +39,10 @@ const PubCrawlInfoList = (props) => {
           totalDurationInMinutes={pubCrawl.totalDurationInMinutes}
           pubs={pubCrawl.pubs}
           pubCrawlClickHandler={() => {
-            history.push({
-              pathname: '/pub-crawl',
-              search: `?id=${pubCrawl.id}`
-            });
+            // history.push({
+            //   pathname: '/pub-crawl',
+            //   search: `?id=${pubCrawl.id}`
+            // });
           }}
           infoButtonClickHandler={(event) => {
             event.stopPropagation();

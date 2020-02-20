@@ -116,9 +116,7 @@ const Home = () => {
       history.push(redirectLocation);
     }, 1500);
 
-    setBackdropOpen(() => {
-      return false;
-    });
+    setBackdropOpen(false);
 
     if (typeof newUser !== 'undefined') {
       setSnackbarSuccessOpen(true);
@@ -130,16 +128,18 @@ const Home = () => {
     setBackdropOpen(false);
   };
   const buttonHandler = async () => {
+    setBackdropOpen(true);
+
     const redirectLocation = await getRedirectLocation();
+
+    setBackdropOpen(false);
 
     history.push(redirectLocation);
   };
   const googleButtonHandler = () => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
-    setBackdropOpen(() => {
-      return true;
-    });
+    setBackdropOpen(true);
 
     firebase
       .auth()

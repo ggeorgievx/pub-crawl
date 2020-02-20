@@ -33,6 +33,7 @@ import CustomSpeedDial from '../../components/CustomSpeedDial/CustomSpeedDial';
 import algoRunner from '../../algorithms';
 import NestedGrid from '../../components/NestedGrid/NestedGrid';
 import { Typography } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles({
   create: {
@@ -94,6 +95,7 @@ const Create = () => {
   const [backdropData, setBackdropData] = useState([[]]);
   const [backdropMessage, setBackdropMessage] = useState('');
   const [algoToRun, setAlgoToRun] = useState('');
+  const matches = useMediaQuery('(min-width:1200px)');
 
   const numberOfSteps = 3;
   const icons = {
@@ -604,13 +606,13 @@ const Create = () => {
         className={classes.backdrop}
         open={backdropOpen}
       >
+        {(algoToRun && backdropMessage && matches) && (
+          <NestedGrid data={backdropData} />
+        )}
         {(algoToRun && backdropMessage) && (
-          <>
-            <NestedGrid data={backdropData} />
-            <Typography className={classes.text}>
-              {backdropMessage}
-            </Typography>
-          </>
+          <Typography className={classes.text}>
+            {backdropMessage}
+          </Typography>
         )}
         <CircularProgress color="secondary" />
       </Backdrop>

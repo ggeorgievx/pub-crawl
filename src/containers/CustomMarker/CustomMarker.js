@@ -25,14 +25,16 @@ const CustomMarker = (props) => {
   };
 
   const icon = {
-    url: constants.PUB_MARKER_BASE64
+    url: constants.PUB_MARKER_DEFAULT_BASE64
   };
 
   if (props.pubMarkersInfoLength > 1) {
     if (props.index === 0) {
-      icon.url = constants.FIRST_MARKER_BASE64;
+      icon.url = constants.PUB_MARKER_FIRST_BASE64;
     } else if (props.index === props.pubMarkersInfoLength - 1) {
-      icon.url = constants.LAST_MARKER_BASE64;
+      icon.url = constants.PUB_MARKER_LAST_BASE64;
+    } else {
+      icon.url = constants[`PUB_MARKER_${props.index + 1}_BASE64`];
     }
   }
 

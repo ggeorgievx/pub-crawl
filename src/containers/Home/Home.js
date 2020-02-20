@@ -114,7 +114,7 @@ const Home = () => {
 
     setTimeout(() => {
       history.push(redirectLocation);
-    }, 2000);
+    }, 1500);
 
     setBackdropOpen(() => {
       return false;
@@ -214,7 +214,7 @@ const Home = () => {
       </Backdrop>
       <Snackbar
         open={snackbarSuccessOpen}
-        autoHideDuration={1500}
+        autoHideDuration={1200}
         onClose={() => setSnackbarSuccessOpen(false)}
       >
         <MuiAlert elevation={6} variant="filled" severity="success">
@@ -223,7 +223,7 @@ const Home = () => {
       </Snackbar>
       <Snackbar
         open={snackbarErrorOpen}
-        autoHideDuration={1500}
+        autoHideDuration={1200}
         onClose={() => setSnackbarErrorOpen(false)}
       >
         <MuiAlert elevation={6} variant="filled" severity="error">

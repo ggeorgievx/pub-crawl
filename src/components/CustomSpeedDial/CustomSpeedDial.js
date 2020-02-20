@@ -11,6 +11,7 @@ import FlightIcon from '@material-ui/icons/Flight';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import constants from '../../constants';
 
 const useStyles = makeStyles({
   speedDial: {
@@ -30,7 +31,6 @@ const useStyles = makeStyles({
     }
   },
   innerFab: {
-    backgroundColor: 'rgb(240, 98, 146)',
     '&:hover': {
       backgroundColor: 'rgb(244,143,177)'
     },
@@ -52,18 +52,31 @@ const useStyles = makeStyles({
       marginRight: '2px',
       fontSize: '14px'
     }
+  },
+  enabled: {
+    backgroundColor: 'rgb(240, 98, 146)'
+  },
+  disabled: {
+    backgroundColor: 'rgb(219,	219, 219) !important'
   }
 });
 
 const CustomSpeedDial = (props) => {
   const classes = useStyles();
 
-  const actions = [
-    { icon: <FlightIcon className={classes.icon} />, name: 'Shortest' },
-    { icon: <AttachMoneyIcon className={classes.icon} />, name: 'Greedy' },
-    { icon: <ThumbUpIcon className={classes.icon} />, name: '⭐️ asc' },
-    { icon: <ThumbDownIcon className={classes.icon} />, name: '⭐️ desc' }
-  ];
+  const actions = [{
+    icon: <FlightIcon className={classes.icon} />,
+    name: constants.ALGO_SHORTEST
+  }, {
+    icon: <AttachMoneyIcon className={classes.icon} />,
+    name: constants.ALGO_GREEDY
+  }, {
+    icon: <ThumbUpIcon className={classes.icon} />,
+    name: constants.ALGO_RATING_ASC
+  }, {
+    icon: <ThumbDownIcon className={classes.icon} />,
+    name: constants.ALGO_RATING_DESC
+  }];
 
   return (
     <SpeedDial
@@ -82,17 +95,20 @@ const CustomSpeedDial = (props) => {
       {actions.map((action) => (
         <SpeedDialAction
           classes={{
-            fab: classes.innerFab
+            fab: `${classes.innerFab} ${props.pubsLength > 1 ? classes.enabled : classes.disabled}`
           }}
           key={action.name}
           icon={action.icon}
           tooltipTitle={action.name}
           onClick={() => {
             props.speedDialCloseHandler();
-            props.applyAlgo(action.name);
+            props.runAlgo(action.name);
           }}
           TooltipClasses={{
             tooltip: classes.tooltip
+          }}
+          FabProps={{
+            disabled: !(props.pubsLength > 1)
           }}
         />
       ))}
@@ -104,7 +120,8 @@ CustomSpeedDial.propTypes = forbidExtraProps({
   speedDialOpen: PropTypes.bool.isRequired,
   speedDialOpenHandler: PropTypes.func.isRequired,
   speedDialCloseHandler: PropTypes.func.isRequired,
-  applyAlgo: PropTypes.func.isRequired
+  runAlgo: PropTypes.func.isRequired,
+  pubsLength: PropTypes.number.isRequired
 });
 
 export default CustomSpeedDial;

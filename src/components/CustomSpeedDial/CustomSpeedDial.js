@@ -95,7 +95,7 @@ const CustomSpeedDial = (props) => {
       {actions.map((action) => (
         <SpeedDialAction
           classes={{
-            fab: `${classes.innerFab} ${props.pubsLength > 1 ? classes.enabled : classes.disabled}`
+            fab: `${classes.innerFab} ${props.enabled ? classes.enabled : classes.disabled}`
           }}
           key={action.name}
           icon={action.icon}
@@ -108,7 +108,7 @@ const CustomSpeedDial = (props) => {
             tooltip: classes.tooltip
           }}
           FabProps={{
-            disabled: !(props.pubsLength > 1)
+            disabled: !(props.enabled)
           }}
         />
       ))}
@@ -121,7 +121,7 @@ CustomSpeedDial.propTypes = forbidExtraProps({
   speedDialOpenHandler: PropTypes.func.isRequired,
   speedDialCloseHandler: PropTypes.func.isRequired,
   runAlgo: PropTypes.func.isRequired,
-  pubsLength: PropTypes.number.isRequired
+  enabled: PropTypes.bool.isRequired
 });
 
 export default CustomSpeedDial;

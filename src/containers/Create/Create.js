@@ -311,8 +311,7 @@ const Create = () => {
   }, [backdropData, algoToRun, pubCrawlInfo.pubs, setPubs]);
 
   const runAlgo = async (algo) => {
-    if (constants.DISTANCE_DEPENDANT_ALGOS.includes(algo) &&
-      pubCrawlInfo.directions !== null) {
+    if (constants.DISTANCE_DEPENDANT_ALGOS.includes(algo)) {
 
       setBackdropData(() => {
         return Array.from({ length: pubCrawlInfo.pubs.length }).map((_, i) => {
@@ -584,7 +583,7 @@ const Create = () => {
             speedDialOpenHandler={speedDialOpenHandler}
             speedDialCloseHandler={speedDialCloseHandler}
             runAlgo={runAlgo}
-            pubsLength={pubCrawlInfo.pubs.length}
+            enabled={pubCrawlInfo.directions !== null}
           />
         </>
         <PubCrawlDetails

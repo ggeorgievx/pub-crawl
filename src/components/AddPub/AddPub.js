@@ -53,7 +53,7 @@ const AddPub = (props) => {
           endIcon={<AddCircleOutlineIcon />}
           onClick={props.addPubButtonHandler}
         >
-          Add Pub
+          Add Place
         </Button>
       )}
       {props.autocompleteOpen && (

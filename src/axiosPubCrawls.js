@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosPubCrawlsInstance = axios.create({
-  baseURL: 'https://pub-crawl-267516.firebaseio.com/pubCrawls'
+  baseURL: `${process.env.REACT_APP_DATABASE_URL}/pubCrawls`
 });
 
 export default axiosPubCrawlsInstance;

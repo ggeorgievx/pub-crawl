@@ -88,9 +88,12 @@ const Home = () => {
 
     return new Promise((resolve) => {
       if (currentUser !== null) {
-        axiosPubCrawlsInstance('.json')
+        currentUser.getIdToken(true)
+          .then((idToken) => {
+            return axiosPubCrawlsInstance(`/${currentUser.uid}.json?auth=${idToken}`);
+          })
           .then((response) => {
-            resolve(Object.keys(response.data[currentUser.uid]).length > 0);
+            resolve(Object.keys(response.data).length > 0);
           })
           .catch(() => {
             resolve(false);
@@ -174,7 +177,7 @@ const Home = () => {
                 onClick={buttonHandler}
               >
                 CONTINUE AS GUEST
-            </Button>
+              </Button>
             </Tooltip>
             <Tooltip
               title="WITH HISTORY"
@@ -190,20 +193,20 @@ const Home = () => {
                 onClick={googleButtonHandler}
               >
                 LOGIN WITH GOOGLE
-            </Button>
+              </Button>
             </Tooltip>
           </div>
         ) : (
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={buttonHandler}
-            >
-              CONTINUE
-            </Button>
-          )}
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={buttonHandler}
+          >
+            CONTINUE
+          </Button>
+        )}
       </div>
       <Backdrop
         className={classes.backdrop}

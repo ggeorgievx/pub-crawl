@@ -89,13 +89,7 @@ const PubCrawls = () => {
     setBackdropOpen(true);
 
     const normalizePubCrawls = (pubCrawls) => {
-      let currentUsersPubCrawls;
-
-      if (authContext.currentUser !== null) {
-        currentUsersPubCrawls = pubCrawls[authContext.currentUser.uid];
-      } else {
-        currentUsersPubCrawls = pubCrawls;
-      }
+      const currentUsersPubCrawls = pubCrawls;
 
       const normalizedPubCrawls = Object.keys(currentUsersPubCrawls).map((currentUsersPubCrawlId) => {
         return {
@@ -117,8 +111,9 @@ const PubCrawls = () => {
       });
     };
 
-    const fetchPubCrawlsFromFirebase = async () => {
-      const response = await axiosPubCrawlsInstance('.json');
+    const fetchPubCrawlsForCurrentUserFromFirebase = async (currentUser) => {
+      const idToken = await currentUser.getIdToken(true);
+      const response = await axiosPubCrawlsInstance(`/${currentUser.uid}.json?auth=${idToken}`);
 
       normalizeAndSetPubCrawls(response.data);
     };
@@ -130,7 +125,7 @@ const PubCrawls = () => {
     };
 
     if (authContext.currentUser !== null) {
-      fetchPubCrawlsFromFirebase();
+      fetchPubCrawlsForCurrentUserFromFirebase(authContext.currentUser);
     } else {
       retrievePubCrawlsFromLocalStorage();
     }

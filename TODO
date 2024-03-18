@@ -1,0 +1,77 @@
+0.)
+1.)
+
+TODOs:
+  Allow the sharing of pub crawls
+  Mobile tabs like NeChakai.com
+  /pub-crawl/:id:
+    Material ui - overlay over the map? Dropdown with remaining?
+    Depending on the query param - +new Date() vs Firebase id - get the resource from Firebase/localStorage and then write the progress there
+    friends.svg
+    share.svg
+    play.svg
+    next.svg
+    stop.svg
+    Display current location
+    Select friends per Pub and generate image at end of crawl
+    Test responsiveness
+    Git Commit and Push
+  SEO
+  License:
+    Also add to package.json
+  Glitch when dropping draggables down
+  Fix Maps route blur
+  Fix PubList's expanding (because of the scrollbar) moving the CustomSpeedDial
+  Shuffle matrix traversal
+  Cache the distances and don't refetch them
+  Split nice to haves into Features and Refactoring - add GitHub issue for each and label it correspondingly
+  Convert to a social network
+  User location prompt
+  https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm
+  Use Material UI's List component inside PubInfoList and PubCrawls
+  Reorders - user to tell latest start
+  Cancellable algos
+  Refactor checkIfCurrentUserHasPubCrawls
+  Create a CSS theme and CSS variables constants file
+  reCAPTCHA
+  price_level
+  remove sendDirectionsResultRequest from the algorithms
+  UI folder for generic UI elements
+  Different colour routes between the pubs
+  "import Icon from '@material-ui/core/Icon';" vs import { Icon } from '@material-ui/core';"
+  Hoist the functions that don't rely on props/state outside of the components
+  Display an error when there are no directions between the pubs
+  Finish /pub-crawls
+  Add comments
+  withBackdrop HoC
+  Inside normalizePlace turn the underscore properties to camelCase
+  Debounce setPubCrawlName
+  Modify the logo
+  https://material-ui.com/components/skeleton/
+  Custom OAuth screen
+  do while
+  String constants file
+  Optimise the data storage
+  Move custom* components inside of UI folder?
+  Store start & end inside each Pub?
+  Optimise where needed using React memo
+  Pass a subset of the pubCrawlInfo to the CustomizedStepper
+  Loading animation while waiting for the directionsResponse
+  useCallback
+  Pub suggestions:
+    Show pubs in area
+    Display only when zoom is greater than a given value
+    Filter bars
+    Show as *draggable* markers that can be dropped inside of the PubsList
+    Button "Hide Pubs that aren't part of the PubCrawl" => display directions
+  Backend to generate image onSave
+  Handle request failures
+  Optimise images
+  Do not setPubCrawlName after each keypress
+  Give feedback to the user about the minimum pubCrawlInfo.pubs.length (1) and pubCrawlNameLength (2 < len < 18)
+  https://introjs.com
+  Lighthouse
+  History
+  Edit/Delete PubCrawl
+  Tests
+  PWA
